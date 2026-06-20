@@ -1,182 +1,498 @@
-# Phase 13 — AD Attacks & Defense
+# 🛡️ Phase 13 — AD Attacks & Defense
 
-> Simulate and defend against the most common Active Directory attack techniques: LLMNR/NBT-NS poisoning, password spraying, Kerberoasting, AS-REP roasting, and DCSync. For each attack, understand how it works, how to detect it, and how to prevent it.
+> **Disable LLMNR and NBT-NS as quick-win defenses, simulate and detect password spraying attacks, perform Kerberoasting simulation and defense, test AS-REP Roasting on accounts without pre-authentication, detect DCSync attacks, and verify all defenses are working.**
 
-> ⚠️ **Lab use only.** All simulations were performed in the isolated `vertex.local` lab environment. Never perform these techniques on systems you don't own or have explicit written authorisation for.
+**Prerequisites:** All prior phases completed — full enterprise AD lab with security controls.
+
+---
+## 📑 Table of Contents
+
+- [Step 1 — Disable LLMNR & NBT-NS](#step-1-disable-llmnr-nbt-ns)
+- [Step 2 — Simulate & Detect Password Spraying](#step-2-simulate-detect-password-spraying)
+- [Step 3 — Kerberoasting Simulation & Defense](#step-3-kerberoasting-simulation-defense)
+- [Step 4 — AS-REP Roasting Detection](#step-4-as-rep-roasting-detection)
+- [Step 5 — DCSync Detection & Analysis](#step-5-dcsync-detection-analysis)
+- [Step 6 — Verify All Defenses](#step-6-verify-all-defenses)
 
 ---
 
-## Steps
+## Step 1 — Disable LLMNR & NBT-NS
 
-### 01 — Disable LLMNR and NBT-NS (Quick Win Defense)
-**LLMNR** (Link-Local Multicast Name Resolution) and **NBT-NS** (NetBIOS Name Service) are legacy Windows name resolution protocols that broadcast queries on the local network when DNS fails. Attackers run tools like **Responder** to intercept these broadcasts and steal NTLMv2 hashes.
+Disable LLMNR (Link-Local Multicast Name Resolution) and NBT-NS (NetBIOS Name Service) to prevent poisoning attacks:
 
-**Defense implemented via GPO:**
-
-Created and enforced a GPO: `Security - Disable LLMNR and NBTNS`
-
-- Computer Configuration → Administrative Templates → Network → DNS Client
-  - ✅ Turn off multicast name resolution: **Enabled**
-- Computer Configuration → Windows Settings → Security Settings → Local Policies → Security Options
-  - Network security: Restrict NTLM: ...
-
-Also disabled NBT-NS via registry:
+**Via GPO:**
 ```
-HKLM\SYSTEM\CurrentControlSet\Services\NetBT\Parameters\Interfaces\{GUID}\
-NetbiosOptions = 2  (0=default, 1=enabled, 2=disabled)
+Computer Configuration → Admin Templates → Network → DNS Client
+→ Turn off multicast name resolution → Enabled
 ```
 
-Verified with `gpresult /r` on CLIENT1.
+**Disable NBT-NS via registry or network adapter settings.**
 
-**Screenshots:** `01-DISABLE LLMNR AND NBT-NS (Quick Win Defense)/` (13+ images)
+### Screenshot 1
+
+![Step 1 — Disable LLMNR & NBT-NS - Screenshot 1](01-DISABLE%20LLMNR%20AND%20NBT-NS%20(Quick%20Win%20Defense)/Quick%20Win%20Defense-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 1 — Disable LLMNR & NBT-NS - Screenshot 2](01-DISABLE%20LLMNR%20AND%20NBT-NS%20(Quick%20Win%20Defense)/Quick%20Win%20Defense-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 1 — Disable LLMNR & NBT-NS - Screenshot 3](01-DISABLE%20LLMNR%20AND%20NBT-NS%20(Quick%20Win%20Defense)/Quick%20Win%20Defense-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 1 — Disable LLMNR & NBT-NS - Screenshot 4](01-DISABLE%20LLMNR%20AND%20NBT-NS%20(Quick%20Win%20Defense)/Quick%20Win%20Defense-%20%284%29.png)
+
+**Continue the configuration (step 4 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 1 — Disable LLMNR & NBT-NS - Screenshot 5](01-DISABLE%20LLMNR%20AND%20NBT-NS%20(Quick%20Win%20Defense)/Quick%20Win%20Defense-%20%285%29.png)
+
+**Continue the configuration (step 5 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 6
+
+![Step 1 — Disable LLMNR & NBT-NS - Screenshot 6](01-DISABLE%20LLMNR%20AND%20NBT-NS%20(Quick%20Win%20Defense)/Quick%20Win%20Defense-%20%286%29.png)
+
+**Continue the configuration (step 6 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 7
+
+![Step 1 — Disable LLMNR & NBT-NS - Screenshot 7](01-DISABLE%20LLMNR%20AND%20NBT-NS%20(Quick%20Win%20Defense)/Quick%20Win%20Defense-%20%287%29.png)
+
+**Continue the configuration (step 7 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 8
+
+![Step 1 — Disable LLMNR & NBT-NS - Screenshot 8](01-DISABLE%20LLMNR%20AND%20NBT-NS%20(Quick%20Win%20Defense)/Quick%20Win%20Defense-%20%288%29.png)
+
+**Continue the configuration (step 8 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 9
+
+![Step 1 — Disable LLMNR & NBT-NS - Screenshot 9](01-DISABLE%20LLMNR%20AND%20NBT-NS%20(Quick%20Win%20Defense)/Quick%20Win%20Defense-%20%289%29.png)
+
+**Continue the configuration (step 9 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 10
+
+![Step 1 — Disable LLMNR & NBT-NS - Screenshot 10](01-DISABLE%20LLMNR%20AND%20NBT-NS%20(Quick%20Win%20Defense)/Quick%20Win%20Defense-%20%2810%29.png)
+
+**Continue the configuration (step 10 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 11
+
+![Step 1 — Disable LLMNR & NBT-NS - Screenshot 11](01-DISABLE%20LLMNR%20AND%20NBT-NS%20(Quick%20Win%20Defense)/Quick%20Win%20Defense-%20%2811%29.png)
+
+**Continue the configuration (step 11 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 12
+
+![Step 1 — Disable LLMNR & NBT-NS - Screenshot 12](01-DISABLE%20LLMNR%20AND%20NBT-NS%20(Quick%20Win%20Defense)/Quick%20Win%20Defense-%20%2812%29.png)
+
+**Continue the configuration (step 12 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 13
+
+![Step 1 — Disable LLMNR & NBT-NS - Screenshot 13](01-DISABLE%20LLMNR%20AND%20NBT-NS%20(Quick%20Win%20Defense)/Quick%20Win%20Defense-%20%2813%29.png)
+
+**Continue the configuration (step 13 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 14
+
+![Step 1 — Disable LLMNR & NBT-NS - Screenshot 14](01-DISABLE%20LLMNR%20AND%20NBT-NS%20(Quick%20Win%20Defense)/Quick%20Win%20Defense-%20%2814%29.png)
+
+**Continue the configuration (step 14 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 15
+
+![Step 1 — Disable LLMNR & NBT-NS - Screenshot 15](01-DISABLE%20LLMNR%20AND%20NBT-NS%20(Quick%20Win%20Defense)/Quick%20Win%20Defense-%20%2815%29.png)
+
+**Continue the configuration (step 15 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 16
+
+![Step 1 — Disable LLMNR & NBT-NS - Screenshot 16](01-DISABLE%20LLMNR%20AND%20NBT-NS%20(Quick%20Win%20Defense)/Quick%20Win%20Defense-%20%2816%29.png)
+
+**Continue the configuration (step 16 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 17
+
+![Step 1 — Disable LLMNR & NBT-NS - Screenshot 17](01-DISABLE%20LLMNR%20AND%20NBT-NS%20(Quick%20Win%20Defense)/Quick%20Win%20Defense-%20%2817%29.png)
+
+**Continue the configuration (step 17 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 18
+
+![Step 1 — Disable LLMNR & NBT-NS - Screenshot 18](01-DISABLE%20LLMNR%20AND%20NBT-NS%20(Quick%20Win%20Defense)/Quick%20Win%20Defense-%20%2818%29.png)
+
+**Continue the configuration (step 18 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 19
+
+![Step 1 — Disable LLMNR & NBT-NS - Screenshot 19](01-DISABLE%20LLMNR%20AND%20NBT-NS%20(Quick%20Win%20Defense)/Quick%20Win%20Defense-%20%2819%29.png)
+
+**Continue the configuration (step 19 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 20
+
+![Step 1 — Disable LLMNR & NBT-NS - Screenshot 20](01-DISABLE%20LLMNR%20AND%20NBT-NS%20(Quick%20Win%20Defense)/Quick%20Win%20Defense-%20%2820%29.png)
+
+**Continue the configuration (step 20 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 21
+
+![Step 1 — Disable LLMNR & NBT-NS - Screenshot 21](01-DISABLE%20LLMNR%20AND%20NBT-NS%20(Quick%20Win%20Defense)/Quick%20Win%20Defense-%20%2821%29.png)
+
+**Continue the configuration (step 21 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 22
+
+![Step 1 — Disable LLMNR & NBT-NS - Screenshot 22](01-DISABLE%20LLMNR%20AND%20NBT-NS%20(Quick%20Win%20Defense)/Quick%20Win%20Defense-%20%2822%29.png)
+
+**Continue the configuration (step 22 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 23
+
+![Step 1 — Disable LLMNR & NBT-NS - Screenshot 23](01-DISABLE%20LLMNR%20AND%20NBT-NS%20(Quick%20Win%20Defense)/Quick%20Win%20Defense-%20%2823%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-### 02 — Simulate and Detect Password Spraying
-**Password spraying** tries one common password (e.g., `Winter2024!`) against many accounts, staying under lockout thresholds by spreading attempts over time.
+## Step 2 — Simulate & Detect Password Spraying
 
-**Attack simulation:**
-- Attempted a single password against multiple accounts in the domain
-- Used slow iteration to avoid triggering the 3-attempt lockout policy
+Simulate a password spraying attack and detect it via Event Viewer:
+
+```powershell
+# Simulate spray — try common password against multiple accounts
+$users = Get-ADUser -Filter * -SearchBase 'OU=HQ-London,OU=VERTEX,DC=vertex,DC=local'
+foreach ($user in $users) {
+    # Attempt logon with a bad password (simulation)
+}
+```
+
+**Detection:** Look for Event ID 4625 (failed logon) with multiple different usernames from the same source in a short window.
+
+### Screenshot 1
+
+![Step 2 — Simulate & Detect Password Spraying - Screenshot 1](02-SIMULATE%20AND%20DETECT%20PASSWORD%20SPRAYING/SPRAYING-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 2 — Simulate & Detect Password Spraying - Screenshot 2](02-SIMULATE%20AND%20DETECT%20PASSWORD%20SPRAYING/SPRAYING-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 2 — Simulate & Detect Password Spraying - Screenshot 3](02-SIMULATE%20AND%20DETECT%20PASSWORD%20SPRAYING/SPRAYING-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 2 — Simulate & Detect Password Spraying - Screenshot 4](02-SIMULATE%20AND%20DETECT%20PASSWORD%20SPRAYING/SPRAYING-%20%284%29.png)
+
+**Continue the configuration (step 4 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 2 — Simulate & Detect Password Spraying - Screenshot 5](02-SIMULATE%20AND%20DETECT%20PASSWORD%20SPRAYING/SPRAYING-%20%285%29.png)
+
+**Continue the configuration (step 5 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 6
+
+![Step 2 — Simulate & Detect Password Spraying - Screenshot 6](02-SIMULATE%20AND%20DETECT%20PASSWORD%20SPRAYING/SPRAYING-%20%286%29.png)
+
+**Continue the configuration (step 6 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 7
+
+![Step 2 — Simulate & Detect Password Spraying - Screenshot 7](02-SIMULATE%20AND%20DETECT%20PASSWORD%20SPRAYING/SPRAYING-%20%287%29.png)
+
+**Continue the configuration (step 7 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 8
+
+![Step 2 — Simulate & Detect Password Spraying - Screenshot 8](02-SIMULATE%20AND%20DETECT%20PASSWORD%20SPRAYING/SPRAYING-%20%288%29.png)
+
+**Continue the configuration (step 8 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 9
+
+![Step 2 — Simulate & Detect Password Spraying - Screenshot 9](02-SIMULATE%20AND%20DETECT%20PASSWORD%20SPRAYING/SPRAYING-%20%289%29.png)
+
+**Continue the configuration (step 9 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 10
+
+![Step 2 — Simulate & Detect Password Spraying - Screenshot 10](02-SIMULATE%20AND%20DETECT%20PASSWORD%20SPRAYING/SPRAYING-%20%2810%29.png)
+
+**Continue the configuration (step 10 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 11
+
+![Step 2 — Simulate & Detect Password Spraying - Screenshot 11](02-SIMULATE%20AND%20DETECT%20PASSWORD%20SPRAYING/SPRAYING-%20%2811%29.png)
+
+**Continue the configuration (step 11 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 12
+
+![Step 2 — Simulate & Detect Password Spraying - Screenshot 12](02-SIMULATE%20AND%20DETECT%20PASSWORD%20SPRAYING/SPRAYING-%20%2812%29.png)
+
+**Continue the configuration (step 12 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 13
+
+![Step 2 — Simulate & Detect Password Spraying - Screenshot 13](02-SIMULATE%20AND%20DETECT%20PASSWORD%20SPRAYING/SPRAYING-%20%2813%29.png)
+
+**Continue the configuration (step 13 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 14
+
+![Step 2 — Simulate & Detect Password Spraying - Screenshot 14](02-SIMULATE%20AND%20DETECT%20PASSWORD%20SPRAYING/SPRAYING-%20%2814%29.png)
+
+**Continue the configuration (step 14 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 15
+
+![Step 2 — Simulate & Detect Password Spraying - Screenshot 15](02-SIMULATE%20AND%20DETECT%20PASSWORD%20SPRAYING/SPRAYING-%20%2815%29.png)
+
+**Continue the configuration (step 15 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 16
+
+![Step 2 — Simulate & Detect Password Spraying - Screenshot 16](02-SIMULATE%20AND%20DETECT%20PASSWORD%20SPRAYING/SPRAYING-%20%2816%29.png)
+
+**Continue the configuration (step 16 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 17
+
+![Step 2 — Simulate & Detect Password Spraying - Screenshot 17](02-SIMULATE%20AND%20DETECT%20PASSWORD%20SPRAYING/SPRAYING-%20%2817%29.png)
+
+**Final result — verify the configuration is complete and working.**
+
+---
+
+## Step 3 — Kerberoasting Simulation & Defense
+
+Simulate Kerberoasting and implement defenses:
+
+```powershell
+# Find Kerberoastable accounts
+Get-ADUser -Filter 'ServicePrincipalName -like "*"' -Properties ServicePrincipalName
+```
+
+**Defense:**
+- Use long (25+ char), random passwords for service accounts
+- Use Group Managed Service Accounts (gMSA)
+- Monitor Event ID 4769 with RC4 encryption type
+
+### Screenshot 1
+
+![Step 3 — Kerberoasting Simulation & Defense - Screenshot 1](03-KERBEROASTING%20SIMULATION%20AND%20DEFENSE/KERBEROASTING-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 3 — Kerberoasting Simulation & Defense - Screenshot 2](03-KERBEROASTING%20SIMULATION%20AND%20DEFENSE/KERBEROASTING-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 3 — Kerberoasting Simulation & Defense - Screenshot 3](03-KERBEROASTING%20SIMULATION%20AND%20DEFENSE/KERBEROASTING-%20%283%29.png)
+
+**Final result — verify the configuration is complete and working.**
+
+---
+
+## Step 4 — AS-REP Roasting Detection
+
+Find accounts vulnerable to AS-REP Roasting (pre-auth disabled):
+
+```powershell
+Get-ADUser -Filter 'DoesNotRequirePreAuth -eq $true' -Properties DoesNotRequirePreAuth
+```
+
+**Defense:** Ensure all accounts require Kerberos pre-authentication. Monitor Event ID 4768.
+
+### Screenshot 1
+
+![Step 4 — AS-REP Roasting Detection - Screenshot 1](04-AS-REP%20ROASTING%20(NO%20PRE-AUTH%20ACCOUNTS)/%20ROASTING-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 4 — AS-REP Roasting Detection - Screenshot 2](04-AS-REP%20ROASTING%20(NO%20PRE-AUTH%20ACCOUNTS)/%20ROASTING-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 4 — AS-REP Roasting Detection - Screenshot 3](04-AS-REP%20ROASTING%20(NO%20PRE-AUTH%20ACCOUNTS)/%20ROASTING-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 4 — AS-REP Roasting Detection - Screenshot 4](04-AS-REP%20ROASTING%20(NO%20PRE-AUTH%20ACCOUNTS)/%20ROASTING-%20%284%29.png)
+
+**Continue the configuration (step 4 of 6) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 4 — AS-REP Roasting Detection - Screenshot 5](04-AS-REP%20ROASTING%20(NO%20PRE-AUTH%20ACCOUNTS)/%20ROASTING-%20%285%29.png)
+
+**Continue the configuration (step 5 of 6) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 6
+
+![Step 4 — AS-REP Roasting Detection - Screenshot 6](04-AS-REP%20ROASTING%20(NO%20PRE-AUTH%20ACCOUNTS)/%20ROASTING-%20%286%29.png)
+
+**Final result — verify the configuration is complete and working.**
+
+---
+
+## Step 5 — DCSync Detection & Analysis
+
+Detect DCSync attacks by monitoring for replication requests from non-DC sources:
 
 **Detection:**
-Filtered Security event log on DC1 for Event ID **4625** (Failed Logon):
-- Looked for: multiple 4625 events across different accounts within a short window
-- LogonType 3 (network) with the same failure reason
+- Event ID 4662 — Directory Service Access
+- Look for `Replicating Directory Changes` permissions on non-DC accounts
 
-**Defense implemented:**
-- Fine-Grained Password Policy with lockout after 3 attempts (Phase 08)
-- Azure AD Password Protection (concept demonstrated — blocks known spray passwords)
-- Audit logging to catch the pattern
-
-**Screenshots:** `02-SIMULATE AND DETECT PASSWORD SPRAYING/`
-
----
-
-### 03 — Kerberoasting Simulation and Defense
-**Kerberoasting** exploits the Kerberos TGS mechanism: any authenticated domain user can request a service ticket for *any* SPN in the domain. Service tickets are encrypted with the service account's password hash — attackers take the ticket offline and crack it.
-
-**Why it works:** Service accounts often have weak passwords and SPNs registered.
-
-**Attack simulation:**
 ```powershell
-# Request service tickets for all Kerberoastable accounts
-Add-Type -AssemblyName System.IdentityModel
-$Tickets = Get-ADUser -Filter {ServicePrincipalName -ne "$null"} -Properties ServicePrincipalName |
-    ForEach-Object {
-        New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken `
-            -ArgumentList $_.ServicePrincipalName[0]
-    }
-# Export hashes for offline cracking (simulation only - not actually cracked in lab)
+# Check who has replication rights
+(Get-Acl 'AD:\DC=vertex,DC=local').Access |
+    Where-Object { $_.ObjectType -eq '1131f6ad-9c07-11d1-f79f-00c04fc2dcd2' }
 ```
 
-**Detection:** Event ID **4769** (Service Ticket Request) with `RC4-HMAC` encryption type (etype 23) — AES requests are legitimate, RC4 requests on service accounts indicate Kerberoasting.
+### Screenshot 1
 
-**Defense implemented:**
-- Changed all service accounts to use **AES-256** only (Phase 09)
-- Set service account passwords to 25+ character random strings
-- Added service accounts to **Protected Users** (forces AES, breaks RC4 Kerberoasting)
-- Enabled auditing for 4769 events with etype 23
+![Step 5 — DCSync Detection & Analysis - Screenshot 1](05-DCSync-Detection-And-Analysis/DCSync-%20%281%29.png)
 
-**Screenshots:** `03-KERBEROASTING SIMULATION AND DEFENSE/`
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 5 — DCSync Detection & Analysis - Screenshot 2](05-DCSync-Detection-And-Analysis/DCSync-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 5 — DCSync Detection & Analysis - Screenshot 3](05-DCSync-Detection-And-Analysis/DCSync-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 5 — DCSync Detection & Analysis - Screenshot 4](05-DCSync-Detection-And-Analysis/DCSync-%20%284%29.png)
+
+**Continue the configuration (step 4 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 5 — DCSync Detection & Analysis - Screenshot 5](05-DCSync-Detection-And-Analysis/DCSync-%20%285%29.png)
+
+**Continue the configuration (step 5 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 6
+
+![Step 5 — DCSync Detection & Analysis - Screenshot 6](05-DCSync-Detection-And-Analysis/DCSync-%20%286%29.png)
+
+**Continue the configuration (step 6 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 7
+
+![Step 5 — DCSync Detection & Analysis - Screenshot 7](05-DCSync-Detection-And-Analysis/DCSync-%20%287%29.png)
+
+**Continue the configuration (step 7 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 8
+
+![Step 5 — DCSync Detection & Analysis - Screenshot 8](05-DCSync-Detection-And-Analysis/DCSync-%20%288%29.png)
+
+**Continue the configuration (step 8 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 9
+
+![Step 5 — DCSync Detection & Analysis - Screenshot 9](05-DCSync-Detection-And-Analysis/DCSync-%20%289%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-### 04 — AS-REP Roasting (No Pre-Auth Accounts)
-**AS-REP Roasting** targets accounts with **"Do not require Kerberos preauthentication"** enabled. Without pre-auth, the KDC returns an AS-REP encrypted with the user's password hash — no authentication needed to request it.
+## Step 6 — Verify All Defenses
 
-**Attack simulation:**
-1. Identified vulnerable accounts:
+Run a comprehensive defense verification:
+
 ```powershell
-Get-ADUser -Filter {DoesNotRequirePreAuth -eq $true} -Properties DoesNotRequirePreAuth
-```
-2. Requested AS-REP for the vulnerable account
-3. The returned hash format is crackable offline with Hashcat (`$krb5asrep$`)
+# Verify LLMNR is disabled
+Get-ItemProperty 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient' -Name EnableMulticast
 
-**Detection:** Event ID **4768** (TGT Request) — look for successful AS-REQ from accounts that don't require pre-auth, especially from workstations.
+# Verify no accounts without pre-auth
+Get-ADUser -Filter 'DoesNotRequirePreAuth -eq $true'
 
-**Defense implemented:**
-- Audited and remediated all accounts with pre-auth disabled (only left test account for demonstration)
-- PowerShell audit script from Phase 12 now flags any future accounts with this setting
+# Verify admin tiering
+Get-ADGroupMember 'Domain Admins'
 
-**Screenshots:** `04-AS-REP ROASTING (NO PRE-AUTH ACCOUNTS)/`
+# Verify LAPS
+Get-ADComputer -Filter * -Properties ms-Mcs-AdmPwdExpirationTime
 
----
-
-### 05 — DCSync Detection and Analysis
-**DCSync** abuses the `DS-Replication-Get-Changes-All` right — the right that DCs use to replicate the AD database between themselves. An account with this right can simulate a DC and request password hash replication from any DC, effectively dumping the entire `NTDS.DIT` including the `krbtgt` hash.
-
-**Impact:** With the `krbtgt` hash, attackers can forge **Golden Tickets** — Kerberos TGTs that never expire and grant access to everything.
-
-**Who has this right by default:**
-- Domain Controllers
-- Domain Admins
-- Enterprise Admins
-
-**Simulation:**
-- Demonstrated the replication rights using `mimikatz lsadump::dcsync` syntax (concept only — Mimikatz was not installed in the lab)
-- Reviewed which accounts held the `DS-Replication-Get-Changes-All` right using PowerShell
-
-**Detection:** Event IDs to monitor:
-- **4662** — Operation performed on an object (look for DS-Replication-Get-Changes-All access right on domain NC)
-- **4929** — AD source replication session removed
-
-Detection query (PowerShell):
-```powershell
-# Check who has DCSync rights
-$Domain = (Get-ADDomain).DistinguishedName
-$ACL = Get-ACL "AD:$Domain"
-$ACL.Access | Where-Object {
-    $_.ObjectType -eq "1131f6ad-9c07-11d1-f79f-00c04fc2dcd2" -or  # DS-Replication-Get-Changes-All
-    $_.ObjectType -eq "1131f6ac-9c07-11d1-f79f-00c04fc2dcd2"       # DS-Replication-Get-Changes
-} | Select-Object IdentityReference, ActiveDirectoryRights
+# Check audit policy
+auditpol /get /category:*
 ```
 
-**Defense implemented:**
-- Verified only DCs and expected admin groups hold replication rights
-- Enabled auditing on the domain NC object
-- Documented the list of accounts with replication rights as a baseline
+### Screenshot 1
 
-**Screenshots:** `05-DCSync-Detection-And-Analysis/`
+![Step 6 — Verify All Defenses - Screenshot 1](06-VERIFY%20YOUR%20DEFENSES%20ARE%20WORKING/VERIFY-%20%281%29.png)
 
----
+**Begin the process — open the relevant tool or navigate to the starting point.**
 
-### 06 — Verify Your Defenses Are Working
-After implementing all defenses, ran a final verification pass:
+### Screenshot 2
 
-| Defense | Verification Method | Status |
-|---------|-------------------|--------|
-| LLMNR disabled | `gpresult /r` on CLIENT1, Wireshark shows no LLMNR traffic | ✅ |
-| NBT-NS disabled | Registry check, no UDP/137 broadcasts | ✅ |
-| Lockout policy active | Tested 3 failed logins → account locked (Event 4740) | ✅ |
-| AES-only Kerberos | `klist` shows AES256 tickets, RC4 ticket requests fail | ✅ |
-| Pre-auth required | `Get-ADUser -Filter {DoesNotRequirePreAuth -eq $true}` returns 0 | ✅ |
-| DCSync rights audited | Only DCs, Domain Admins, Enterprise Admins have replication rights | ✅ |
-| Audit logging | All key Event IDs generating in Security log | ✅ |
+![Step 6 — Verify All Defenses - Screenshot 2](06-VERIFY%20YOUR%20DEFENSES%20ARE%20WORKING/VERIFY-%20%282%29.png)
 
-**Screenshots:** `06-VERIFY YOUR DEFENSES ARE WORKING/`
+**Navigate to the required setting or dialog (step 2).**
 
----
+### Screenshot 3
 
-## Attack to Defense Summary
+![Step 6 — Verify All Defenses - Screenshot 3](06-VERIFY%20YOUR%20DEFENSES%20ARE%20WORKING/VERIFY-%20%283%29.png)
 
-| Attack | Technique | Key Defense |
-|--------|-----------|-------------|
-| LLMNR Poisoning | Intercept broadcast name resolution | Disable LLMNR/NBT-NS via GPO |
-| Password Spraying | Brute-force with low attempt rate | Account lockout + audit Event 4625 |
-| Kerberoasting | Crack offline service ticket hashes | AES-only + strong service account passwords |
-| AS-REP Roasting | Dump hash without authentication | Require pre-auth on all accounts |
-| DCSync | Simulate DC to dump NTDS.DIT | Audit replication rights + monitor Event 4662 |
-| Golden Ticket | Forge TGTs with krbtgt hash | Protect DCs, monitor for anomalous TGTs, rotate krbtgt |
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 6 — Verify All Defenses - Screenshot 4](06-VERIFY%20YOUR%20DEFENSES%20ARE%20WORKING/VERIFY-%20%284%29.png)
+
+**Continue the configuration (step 4 of 5) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 6 — Verify All Defenses - Screenshot 5](06-VERIFY%20YOUR%20DEFENSES%20ARE%20WORKING/VERIFY-%20%285%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-## Tools & References
+## 🔗 Navigation
 
-`Group Policy Management` · `PowerShell ActiveDirectory module` · `Event Viewer` · `Sysinternals Suite`
+[⬆️ Back to Top](#)
 
-References: MITRE ATT&CK for Enterprise — [Credential Access (TA0006)](https://attack.mitre.org/tactics/TA0006/)
-
----
-
-*Previous: [Phase 12 — PowerShell Automation](<../Phase 12 lab powershell ad/README.md>) · [← Back to Main README](<../README.md>)*
+[📚 Back to Master README](../README.md)

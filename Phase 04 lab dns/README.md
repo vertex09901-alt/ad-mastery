@@ -1,116 +1,593 @@
-# Phase 04 — DNS Configuration
+# 🌐 Phase 04 — DNS Configuration
 
-> Configure enterprise DNS on DC1: explore what AD auto-created, build a reverse lookup zone, add PTR records, configure external forwarders, create CNAME aliases, set up a conditional forwarder, and verify everything with `nslookup` from both DC1 and CLIENT1.
+> **Explore auto-created DNS zones, create reverse lookup zones and PTR records, configure forwarders, create CNAME alias records, set up conditional forwarders, test DNS resolution with nslookup, verify DNS health, and test from CLIENT1.**
+
+**Prerequisites:** Phase 02 completed — AD-integrated DNS running on DC1.
+
+---
+## 📑 Table of Contents
+
+- [Step 1 — Open DNS Manager & Explore Auto-Created Zones](#step-1-open-dns-manager-explore-auto-created-zones)
+- [Step 2 — Create the Reverse Lookup Zone](#step-2-create-the-reverse-lookup-zone)
+- [Step 3 — Create PTR Records](#step-3-create-ptr-records)
+- [Step 4 — Configure DNS Forwarders](#step-4-configure-dns-forwarders)
+- [Step 5 — Create a CNAME Alias Record](#step-5-create-a-cname-alias-record)
+- [Step 6 — Create a Conditional Forwarder](#step-6-create-a-conditional-forwarder)
+- [Step 7 — Test DNS with nslookup](#step-7-test-dns-with-nslookup)
+- [Step 8 — DNS Health Verification](#step-8-dns-health-verification)
+- [Step 9 — Test DNS from CLIENT1](#step-9-test-dns-from-client1)
 
 ---
 
-## Steps
+## Step 1 — Open DNS Manager & Explore Auto-Created Zones
 
-### 01 — Open DNS Manager & Explore Auto-Created Records
-AD DS automatically created several DNS records during domain promotion. Explored:
-- `vertex.local` Forward Lookup Zone
-- `_msdcs.vertex.local` zone (used for DC locator SRV records)
-- SOA, NS, A records and SRV records for Kerberos and LDAP
+Open DNS Manager from Server Manager → Tools → DNS. Explore the Forward Lookup Zone for `vertex.local` and view auto-created records (SOA, NS, A records for DC1).
 
-![DNS Manager — AD DS and DNS roles visible in Server Manager](<01-OPEN DNS MANAGER AND EXPLORE WHAT WAS AUTO-CREATED/DNS MANAGER- (1).png>)
+### Screenshot 1
+
+![Step 1 — Open DNS Manager & Explore Auto-Created Zones - Screenshot 1](01-OPEN%20DNS%20MANAGER%20AND%20EXPLORE%20WHAT%20WAS%20AUTO-CREATED/DNS%20MANAGER-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 1 — Open DNS Manager & Explore Auto-Created Zones - Screenshot 2](01-OPEN%20DNS%20MANAGER%20AND%20EXPLORE%20WHAT%20WAS%20AUTO-CREATED/DNS%20MANAGER-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 1 — Open DNS Manager & Explore Auto-Created Zones - Screenshot 3](01-OPEN%20DNS%20MANAGER%20AND%20EXPLORE%20WHAT%20WAS%20AUTO-CREATED/DNS%20MANAGER-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 1 — Open DNS Manager & Explore Auto-Created Zones - Screenshot 4](01-OPEN%20DNS%20MANAGER%20AND%20EXPLORE%20WHAT%20WAS%20AUTO-CREATED/DNS%20MANAGER-%20%284%29.png)
+
+**Continue the configuration (step 4 of 14) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 1 — Open DNS Manager & Explore Auto-Created Zones - Screenshot 5](01-OPEN%20DNS%20MANAGER%20AND%20EXPLORE%20WHAT%20WAS%20AUTO-CREATED/DNS%20MANAGER-%20%285%29.png)
+
+**Continue the configuration (step 5 of 14) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 6
+
+![Step 1 — Open DNS Manager & Explore Auto-Created Zones - Screenshot 6](01-OPEN%20DNS%20MANAGER%20AND%20EXPLORE%20WHAT%20WAS%20AUTO-CREATED/DNS%20MANAGER-%20%286%29.png)
+
+**Continue the configuration (step 6 of 14) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 7
+
+![Step 1 — Open DNS Manager & Explore Auto-Created Zones - Screenshot 7](01-OPEN%20DNS%20MANAGER%20AND%20EXPLORE%20WHAT%20WAS%20AUTO-CREATED/DNS%20MANAGER-%20%287%29.png)
+
+**Continue the configuration (step 7 of 14) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 8
+
+![Step 1 — Open DNS Manager & Explore Auto-Created Zones - Screenshot 8](01-OPEN%20DNS%20MANAGER%20AND%20EXPLORE%20WHAT%20WAS%20AUTO-CREATED/DNS%20MANAGER-%20%288%29.png)
+
+**Continue the configuration (step 8 of 14) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 9
+
+![Step 1 — Open DNS Manager & Explore Auto-Created Zones - Screenshot 9](01-OPEN%20DNS%20MANAGER%20AND%20EXPLORE%20WHAT%20WAS%20AUTO-CREATED/DNS%20MANAGER-%20%289%29.png)
+
+**Continue the configuration (step 9 of 14) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 10
+
+![Step 1 — Open DNS Manager & Explore Auto-Created Zones - Screenshot 10](01-OPEN%20DNS%20MANAGER%20AND%20EXPLORE%20WHAT%20WAS%20AUTO-CREATED/DNS%20MANAGER-%20%2810%29.png)
+
+**Continue the configuration (step 10 of 14) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 11
+
+![Step 1 — Open DNS Manager & Explore Auto-Created Zones - Screenshot 11](01-OPEN%20DNS%20MANAGER%20AND%20EXPLORE%20WHAT%20WAS%20AUTO-CREATED/DNS%20MANAGER-%20%2811%29.png)
+
+**Continue the configuration (step 11 of 14) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 12
+
+![Step 1 — Open DNS Manager & Explore Auto-Created Zones - Screenshot 12](01-OPEN%20DNS%20MANAGER%20AND%20EXPLORE%20WHAT%20WAS%20AUTO-CREATED/DNS%20MANAGER-%20%2812%29.png)
+
+**Continue the configuration (step 12 of 14) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 13
+
+![Step 1 — Open DNS Manager & Explore Auto-Created Zones - Screenshot 13](01-OPEN%20DNS%20MANAGER%20AND%20EXPLORE%20WHAT%20WAS%20AUTO-CREATED/DNS%20MANAGER-%20%2813%29.png)
+
+**Continue the configuration (step 13 of 14) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 14
+
+![Step 1 — Open DNS Manager & Explore Auto-Created Zones - Screenshot 14](01-OPEN%20DNS%20MANAGER%20AND%20EXPLORE%20WHAT%20WAS%20AUTO-CREATED/DNS%20MANAGER-%20%2814%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-### 02 — Create the Reverse Lookup Zone
-Created a **Reverse Lookup Zone** for the `192.168.x.x` subnet to allow IP-to-hostname resolution (PTR lookups). Configured as an Active Directory-integrated zone for automatic replication to DC2.
+## Step 2 — Create the Reverse Lookup Zone
 
-**Screenshots:** `02-CREATE THE REVERSE LOOKUP ZONE/`
+Create a reverse lookup zone for the `192.168.10.x` subnet to enable PTR (pointer) record lookups — translating IPs back to hostnames.
 
----
-
-### 03 — Create PTR Records
-Added **PTR (Pointer) records** for DC1, DC2, and CLIENT1 in the reverse lookup zone, enabling `nslookup` reverse queries like:
 ```
-nslookup 192.168.1.10
+Zone Type: Primary Zone
+Replication: All DNS servers in vertex.local
+Network ID: 192.168.10
 ```
 
-**Screenshots:** `03-Create-PTR-Records/`
+### Screenshot 1
+
+![Step 2 — Create the Reverse Lookup Zone - Screenshot 1](02-CREATE%20THE%20REVERSE%20LOOKUP%20ZONE/REVERSE%20LOOKUP%20ZONE-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 2 — Create the Reverse Lookup Zone - Screenshot 2](02-CREATE%20THE%20REVERSE%20LOOKUP%20ZONE/REVERSE%20LOOKUP%20ZONE-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 2 — Create the Reverse Lookup Zone - Screenshot 3](02-CREATE%20THE%20REVERSE%20LOOKUP%20ZONE/REVERSE%20LOOKUP%20ZONE-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 2 — Create the Reverse Lookup Zone - Screenshot 4](02-CREATE%20THE%20REVERSE%20LOOKUP%20ZONE/REVERSE%20LOOKUP%20ZONE-%20%284%29.png)
+
+**Continue the configuration (step 4 of 12) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 2 — Create the Reverse Lookup Zone - Screenshot 5](02-CREATE%20THE%20REVERSE%20LOOKUP%20ZONE/REVERSE%20LOOKUP%20ZONE-%20%285%29.png)
+
+**Continue the configuration (step 5 of 12) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 6
+
+![Step 2 — Create the Reverse Lookup Zone - Screenshot 6](02-CREATE%20THE%20REVERSE%20LOOKUP%20ZONE/REVERSE%20LOOKUP%20ZONE-%20%286%29.png)
+
+**Continue the configuration (step 6 of 12) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 7
+
+![Step 2 — Create the Reverse Lookup Zone - Screenshot 7](02-CREATE%20THE%20REVERSE%20LOOKUP%20ZONE/REVERSE%20LOOKUP%20ZONE-%20%287%29.png)
+
+**Continue the configuration (step 7 of 12) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 8
+
+![Step 2 — Create the Reverse Lookup Zone - Screenshot 8](02-CREATE%20THE%20REVERSE%20LOOKUP%20ZONE/REVERSE%20LOOKUP%20ZONE-%20%288%29.png)
+
+**Continue the configuration (step 8 of 12) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 9
+
+![Step 2 — Create the Reverse Lookup Zone - Screenshot 9](02-CREATE%20THE%20REVERSE%20LOOKUP%20ZONE/REVERSE%20LOOKUP%20ZONE-%20%289%29.png)
+
+**Continue the configuration (step 9 of 12) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 10
+
+![Step 2 — Create the Reverse Lookup Zone - Screenshot 10](02-CREATE%20THE%20REVERSE%20LOOKUP%20ZONE/REVERSE%20LOOKUP%20ZONE-%20%2810%29.png)
+
+**Continue the configuration (step 10 of 12) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 11
+
+![Step 2 — Create the Reverse Lookup Zone - Screenshot 11](02-CREATE%20THE%20REVERSE%20LOOKUP%20ZONE/REVERSE%20LOOKUP%20ZONE-%20%2811%29.png)
+
+**Continue the configuration (step 11 of 12) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 12
+
+![Step 2 — Create the Reverse Lookup Zone - Screenshot 12](02-CREATE%20THE%20REVERSE%20LOOKUP%20ZONE/REVERSE%20LOOKUP%20ZONE-%20%2812%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-### 04 — Configure Forwarders
-Configured **DNS Forwarders** to send external DNS queries (anything outside `vertex.local`) to an upstream DNS resolver:
-- Primary: `8.8.8.8` (Google DNS)
-- Secondary: `8.8.4.4`
+## Step 3 — Create PTR Records
 
-This allows domain-joined machines to resolve internet names through the DC's DNS server.
+Create PTR records in the reverse lookup zone for DC1 (192.168.10.10), DC2 (192.168.10.11), and CLIENT1 (192.168.10.50).
 
-**Screenshots:** `04-CONFIGURE FORWARDERS/` (10 images)
+### Screenshot 1
+
+![Step 3 — Create PTR Records - Screenshot 1](03-Create-PTR-Records/PTR-Records-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 3 — Create PTR Records - Screenshot 2](03-Create-PTR-Records/PTR-Records-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 3 — Create PTR Records - Screenshot 3](03-Create-PTR-Records/PTR-Records-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 3 — Create PTR Records - Screenshot 4](03-Create-PTR-Records/PTR-Records-%20%284%29.png)
+
+**Continue the configuration (step 4 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 3 — Create PTR Records - Screenshot 5](03-Create-PTR-Records/PTR-Records-%20%285%29.png)
+
+**Continue the configuration (step 5 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 6
+
+![Step 3 — Create PTR Records - Screenshot 6](03-Create-PTR-Records/PTR-Records-%20%286%29.png)
+
+**Continue the configuration (step 6 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 7
+
+![Step 3 — Create PTR Records - Screenshot 7](03-Create-PTR-Records/PTR-Records-%20%287%29.png)
+
+**Continue the configuration (step 7 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 8
+
+![Step 3 — Create PTR Records - Screenshot 8](03-Create-PTR-Records/PTR-Records-%20%288%29.png)
+
+**Continue the configuration (step 8 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 9
+
+![Step 3 — Create PTR Records - Screenshot 9](03-Create-PTR-Records/PTR-Records-%20%289%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-### 05 — Create a CNAME Alias Record
-Created a **CNAME record** to alias a friendly name to a server's A record:
+## Step 4 — Configure DNS Forwarders
+
+Configure DNS forwarders to resolve external (internet) names. Add public DNS servers:
 
 ```
-webserver.vertex.local → DC1.vertex.local
+8.8.8.8      (Google DNS)
+8.8.4.4      (Google DNS Secondary)
+1.1.1.1      (Cloudflare DNS)
 ```
 
-This simulates how a file server, web server, or application server might be referenced by a service name rather than a hostname.
+### Screenshot 1
 
-**Screenshots:** `05-CREATE A CNAME ALIAS RECORD/`
+![Step 4 — Configure DNS Forwarders - Screenshot 1](04-CONFIGURE%20FORWARDERS/CONFIGURE%20FORWARDERS-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 4 — Configure DNS Forwarders - Screenshot 2](04-CONFIGURE%20FORWARDERS/CONFIGURE%20FORWARDERS-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 4 — Configure DNS Forwarders - Screenshot 3](04-CONFIGURE%20FORWARDERS/CONFIGURE%20FORWARDERS-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 4 — Configure DNS Forwarders - Screenshot 4](04-CONFIGURE%20FORWARDERS/CONFIGURE%20FORWARDERS-%20%284%29.png)
+
+**Continue the configuration (step 4 of 10) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 4 — Configure DNS Forwarders - Screenshot 5](04-CONFIGURE%20FORWARDERS/CONFIGURE%20FORWARDERS-%20%285%29.png)
+
+**Continue the configuration (step 5 of 10) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 6
+
+![Step 4 — Configure DNS Forwarders - Screenshot 6](04-CONFIGURE%20FORWARDERS/CONFIGURE%20FORWARDERS-%20%286%29.png)
+
+**Continue the configuration (step 6 of 10) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 7
+
+![Step 4 — Configure DNS Forwarders - Screenshot 7](04-CONFIGURE%20FORWARDERS/CONFIGURE%20FORWARDERS-%20%287%29.png)
+
+**Continue the configuration (step 7 of 10) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 8
+
+![Step 4 — Configure DNS Forwarders - Screenshot 8](04-CONFIGURE%20FORWARDERS/CONFIGURE%20FORWARDERS-%20%288%29.png)
+
+**Continue the configuration (step 8 of 10) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 9
+
+![Step 4 — Configure DNS Forwarders - Screenshot 9](04-CONFIGURE%20FORWARDERS/CONFIGURE%20FORWARDERS-%20%289%29.png)
+
+**Continue the configuration (step 9 of 10) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 10
+
+![Step 4 — Configure DNS Forwarders - Screenshot 10](04-CONFIGURE%20FORWARDERS/CONFIGURE%20FORWARDERS-%20%2810%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-### 06 — Create a Conditional Forwarder
-Created a **Conditional Forwarder** to forward DNS queries for a specific external domain to a specific DNS server. This simulates a scenario where two corporate domains need to resolve each other's names (e.g., after a merger).
+## Step 5 — Create a CNAME Alias Record
 
-**Screenshots:** `06-CREATE A CONDITIONAL FORWARDER/`
+Create a CNAME (Canonical Name) record to create an alias for a server. For example, `intranet.vertex.local` → `DC1.vertex.local`.
+
+### Screenshot 1
+
+![Step 5 — Create a CNAME Alias Record - Screenshot 1](05-CREATE%20A%20CNAME%20ALIAS%20RECORD/CNAME-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 5 — Create a CNAME Alias Record - Screenshot 2](05-CREATE%20A%20CNAME%20ALIAS%20RECORD/CNAME-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 5 — Create a CNAME Alias Record - Screenshot 3](05-CREATE%20A%20CNAME%20ALIAS%20RECORD/CNAME-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 5 — Create a CNAME Alias Record - Screenshot 4](05-CREATE%20A%20CNAME%20ALIAS%20RECORD/CNAME-%20%284%29.png)
+
+**Continue the configuration (step 4 of 5) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 5 — Create a CNAME Alias Record - Screenshot 5](05-CREATE%20A%20CNAME%20ALIAS%20RECORD/CNAME-%20%285%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-### 07 — Test All DNS with NSLOOKUP
-Used `nslookup` on DC1 to verify every DNS configuration:
+## Step 6 — Create a Conditional Forwarder
+
+Create a conditional forwarder to forward DNS queries for a specific domain to designated DNS servers. Useful for multi-forest environments.
+
+### Screenshot 1
+
+![Step 6 — Create a Conditional Forwarder - Screenshot 1](06-CREATE%20A%20CONDITIONAL%20FORWARDER/CONDITIONAL%20FORWARDER-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 6 — Create a Conditional Forwarder - Screenshot 2](06-CREATE%20A%20CONDITIONAL%20FORWARDER/CONDITIONAL%20FORWARDER-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 6 — Create a Conditional Forwarder - Screenshot 3](06-CREATE%20A%20CONDITIONAL%20FORWARDER/CONDITIONAL%20FORWARDER-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 6 — Create a Conditional Forwarder - Screenshot 4](06-CREATE%20A%20CONDITIONAL%20FORWARDER/CONDITIONAL%20FORWARDER-%20%284%29.png)
+
+**Continue the configuration (step 4 of 7) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 6 — Create a Conditional Forwarder - Screenshot 5](06-CREATE%20A%20CONDITIONAL%20FORWARDER/CONDITIONAL%20FORWARDER-%20%285%29.png)
+
+**Continue the configuration (step 5 of 7) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 6
+
+![Step 6 — Create a Conditional Forwarder - Screenshot 6](06-CREATE%20A%20CONDITIONAL%20FORWARDER/CONDITIONAL%20FORWARDER-%20%286%29.png)
+
+**Continue the configuration (step 6 of 7) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 7
+
+![Step 6 — Create a Conditional Forwarder - Screenshot 7](06-CREATE%20A%20CONDITIONAL%20FORWARDER/CONDITIONAL%20FORWARDER-%20%287%29.png)
+
+**Final result — verify the configuration is complete and working.**
+
+---
+
+## Step 7 — Test DNS with nslookup
+
+Verify all DNS records work correctly using `nslookup`:
 
 ```cmd
-nslookup dc1.vertex.local          # Forward A record
-nslookup 192.168.1.10              # Reverse PTR record
-nslookup webserver.vertex.local    # CNAME alias
-nslookup google.com                # External via forwarder
+nslookup DC1.vertex.local
+nslookup DC2.vertex.local
+nslookup vertex.local
+nslookup 192.168.10.10
+nslookup 192.168.10.11
 ```
 
-**Screenshots:** `07-TEST ALL DNS WITH NSLOOKUP/`
+### Screenshot 1
+
+![Step 7 — Test DNS with nslookup - Screenshot 1](07-TEST%20ALL%20DNS%20WITH%20NSLOOKUP/NSLOOKUP-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 7 — Test DNS with nslookup - Screenshot 2](07-TEST%20ALL%20DNS%20WITH%20NSLOOKUP/NSLOOKUP-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 7 — Test DNS with nslookup - Screenshot 3](07-TEST%20ALL%20DNS%20WITH%20NSLOOKUP/NSLOOKUP-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 7 — Test DNS with nslookup - Screenshot 4](07-TEST%20ALL%20DNS%20WITH%20NSLOOKUP/NSLOOKUP-%20%284%29.png)
+
+**Continue the configuration (step 4 of 7) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 7 — Test DNS with nslookup - Screenshot 5](07-TEST%20ALL%20DNS%20WITH%20NSLOOKUP/NSLOOKUP-%20%285%29.png)
+
+**Continue the configuration (step 5 of 7) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 6
+
+![Step 7 — Test DNS with nslookup - Screenshot 6](07-TEST%20ALL%20DNS%20WITH%20NSLOOKUP/NSLOOKUP-%20%286%29.png)
+
+**Continue the configuration (step 6 of 7) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 7
+
+![Step 7 — Test DNS with nslookup - Screenshot 7](07-TEST%20ALL%20DNS%20WITH%20NSLOOKUP/NSLOOKUP-%20%287%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-### 08 — DNS Health Verification
-Ran `dcdiag /test:dns` to check for DNS errors across the domain and verified:
-- All SRV records present
-- Both DC1 and DC2 registering correctly
-- No DNS delegation errors
+## Step 8 — DNS Health Verification
 
-**Screenshots:** `08-DNS-Health-Verification/`
+Run DNS diagnostic commands to verify DNS health:
 
----
+```cmd
+dcdiag /test:dns
+nslookup -type=SOA vertex.local
+nslookup -type=NS vertex.local
+```
 
-### 09 — Test DNS from CLIENT1
-Ran `nslookup` from CLIENT1's command prompt to confirm:
-- CLIENT1 correctly queries DC1 for DNS
-- Domain names resolve from the workstation perspective
+### Screenshot 1
 
-**Screenshots:** `09-TEST DNS FROM CLIENT1/`
+![Step 8 — DNS Health Verification - Screenshot 1](08-DNS-Health-Verification/Health-Verification-%20%281%29.png)
 
----
+**Begin the process — open the relevant tool or navigate to the starting point.**
 
-## Key Concepts
+### Screenshot 2
 
-- **AD-integrated zones** replicate via AD replication, not standard zone transfers
-- **Reverse lookup zones** are optional but essential for troubleshooting and some AD features
-- **Forwarders** prevent DNS queries from failing for external names — always configure them
-- **SRV records** are how clients locate domain controllers, Kerberos KDCs, and LDAP servers — never manually delete them
-- `dcdiag /test:dns` is the go-to tool for diagnosing DNS issues in AD environments
+![Step 8 — DNS Health Verification - Screenshot 2](08-DNS-Health-Verification/Health-Verification-%20%282%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-## Tools Used
+## Step 9 — Test DNS from CLIENT1
 
-`DNS Manager` · `nslookup` · `dcdiag` · `PowerShell`
+Log into CLIENT1 and verify it can resolve all domain names:
+
+```cmd
+nslookup vertex.local
+nslookup DC1.vertex.local
+nslookup DC2.vertex.local
+ipconfig /all
+```
+
+### Screenshot 1
+
+![Step 9 — Test DNS from CLIENT1 - Screenshot 1](09-TEST%20DNS%20FROM%20CLIENT1/TEST%20DNS-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 9 — Test DNS from CLIENT1 - Screenshot 2](09-TEST%20DNS%20FROM%20CLIENT1/TEST%20DNS-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 9 — Test DNS from CLIENT1 - Screenshot 3](09-TEST%20DNS%20FROM%20CLIENT1/TEST%20DNS-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 9 — Test DNS from CLIENT1 - Screenshot 4](09-TEST%20DNS%20FROM%20CLIENT1/TEST%20DNS-%20%284%29.png)
+
+**Continue the configuration (step 4 of 14) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 9 — Test DNS from CLIENT1 - Screenshot 5](09-TEST%20DNS%20FROM%20CLIENT1/TEST%20DNS-%20%285%29.png)
+
+**Continue the configuration (step 5 of 14) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 6
+
+![Step 9 — Test DNS from CLIENT1 - Screenshot 6](09-TEST%20DNS%20FROM%20CLIENT1/TEST%20DNS-%20%286%29.png)
+
+**Continue the configuration (step 6 of 14) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 7
+
+![Step 9 — Test DNS from CLIENT1 - Screenshot 7](09-TEST%20DNS%20FROM%20CLIENT1/TEST%20DNS-%20%287%29.png)
+
+**Continue the configuration (step 7 of 14) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 8
+
+![Step 9 — Test DNS from CLIENT1 - Screenshot 8](09-TEST%20DNS%20FROM%20CLIENT1/TEST%20DNS-%20%288%29.png)
+
+**Continue the configuration (step 8 of 14) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 9
+
+![Step 9 — Test DNS from CLIENT1 - Screenshot 9](09-TEST%20DNS%20FROM%20CLIENT1/TEST%20DNS-%20%289%29.png)
+
+**Continue the configuration (step 9 of 14) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 10
+
+![Step 9 — Test DNS from CLIENT1 - Screenshot 10](09-TEST%20DNS%20FROM%20CLIENT1/TEST%20DNS-%20%2810%29.png)
+
+**Continue the configuration (step 10 of 14) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 11
+
+![Step 9 — Test DNS from CLIENT1 - Screenshot 11](09-TEST%20DNS%20FROM%20CLIENT1/TEST%20DNS-%20%2811%29.png)
+
+**Continue the configuration (step 11 of 14) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 12
+
+![Step 9 — Test DNS from CLIENT1 - Screenshot 12](09-TEST%20DNS%20FROM%20CLIENT1/TEST%20DNS-%20%2812%29.png)
+
+**Continue the configuration (step 12 of 14) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 13
+
+![Step 9 — Test DNS from CLIENT1 - Screenshot 13](09-TEST%20DNS%20FROM%20CLIENT1/TEST%20DNS-%20%2813%29.png)
+
+**Continue the configuration (step 13 of 14) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 14
+
+![Step 9 — Test DNS from CLIENT1 - Screenshot 14](09-TEST%20DNS%20FROM%20CLIENT1/TEST%20DNS-%20%2814%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-*Previous: [Phase 03 — Users & Computers](<../Phase 03 lab users computers/README.md>) · Next: [Phase 05 — Groups & AGDLP](<../Phase 05 lab groups agdl/README.md>)*
+## 🔗 Navigation
+
+[⬆️ Back to Top](#)
+
+[📚 Back to Master README](../README.md)

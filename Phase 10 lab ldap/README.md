@@ -1,142 +1,559 @@
-# Phase 10 — LDAP & Directory Queries
+# 📂 Phase 10 — LDAP Operations
 
-> Connect to Active Directory using LDP.exe, run LDAP search queries against the directory, modify object attributes directly via LDAP, explore the directory with ADExplorer, query AD via PowerShell LDAP filters, and establish a secure LDAPS connection on port 636.
+> **Connect to AD using LDP.exe, run LDAP search queries with filters, modify attributes via LDP, install and explore AD with Sysinternals ADExplorer, run LDAP queries with PowerShell, and connect using LDAPS (Secure LDAP, port 636).**
+
+**Prerequisites:** Phase 02 completed — AD operational.
+
+---
+## 📑 Table of Contents
+
+- [Step 1 — Connect to AD Using LDP.exe](#step-1-connect-to-ad-using-ldp.exe)
+- [Step 2 — Run LDAP Search Queries](#step-2-run-ldap-search-queries)
+- [Step 3 — Modify an Attribute with LDP](#step-3-modify-an-attribute-with-ldp)
+- [Step 4 — Install & Use Sysinternals ADExplorer](#step-4-install-use-sysinternals-adexplorer)
+- [Step 5 — LDAP Queries with PowerShell](#step-5-ldap-queries-with-powershell)
+- [Step 6 — Connect with LDAPS (Port 636)](#step-6-connect-with-ldaps-port-636)
 
 ---
 
-## What is LDAP in AD?
+## Step 1 — Connect to AD Using LDP.exe
 
-Active Directory is an **LDAP directory service**. Everything in AD — users, computers, groups, OUs, GPOs — is an LDAP object with attributes. The domain `vertex.local` maps to the LDAP Distinguished Name:
+Launch LDP.exe and connect to the domain controller:
 
 ```
-DC=vertex,DC=local
+Run → ldp.exe
+Connection → Connect → Server: DC1.vertex.local, Port: 389
+Connection → Bind → Bind as currently logged on user
 ```
 
-A user `jsmith` in the `IT` OU under `London HQ` has the DN:
+### Screenshot 1
+
+![Step 1 — Connect to AD Using LDP.exe - Screenshot 1](01-CONNECT%20TO%20AD%20USING%20LDP.EXE/LDP%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 1 — Connect to AD Using LDP.exe - Screenshot 2](01-CONNECT%20TO%20AD%20USING%20LDP.EXE/LDP%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 1 — Connect to AD Using LDP.exe - Screenshot 3](01-CONNECT%20TO%20AD%20USING%20LDP.EXE/LDP%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 1 — Connect to AD Using LDP.exe - Screenshot 4](01-CONNECT%20TO%20AD%20USING%20LDP.EXE/LDP%20%284%29.png)
+
+**Continue the configuration (step 4 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 1 — Connect to AD Using LDP.exe - Screenshot 5](01-CONNECT%20TO%20AD%20USING%20LDP.EXE/LDP%20%285%29.png)
+
+**Continue the configuration (step 5 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 6
+
+![Step 1 — Connect to AD Using LDP.exe - Screenshot 6](01-CONNECT%20TO%20AD%20USING%20LDP.EXE/LDP%20%286%29.png)
+
+**Continue the configuration (step 6 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 7
+
+![Step 1 — Connect to AD Using LDP.exe - Screenshot 7](01-CONNECT%20TO%20AD%20USING%20LDP.EXE/LDP%20%287%29.png)
+
+**Continue the configuration (step 7 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 8
+
+![Step 1 — Connect to AD Using LDP.exe - Screenshot 8](01-CONNECT%20TO%20AD%20USING%20LDP.EXE/LDP%20%288%29.png)
+
+**Continue the configuration (step 8 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 9
+
+![Step 1 — Connect to AD Using LDP.exe - Screenshot 9](01-CONNECT%20TO%20AD%20USING%20LDP.EXE/LDP%20%289%29.png)
+
+**Continue the configuration (step 9 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 10
+
+![Step 1 — Connect to AD Using LDP.exe - Screenshot 10](01-CONNECT%20TO%20AD%20USING%20LDP.EXE/LDP%20%2810%29.png)
+
+**Continue the configuration (step 10 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 11
+
+![Step 1 — Connect to AD Using LDP.exe - Screenshot 11](01-CONNECT%20TO%20AD%20USING%20LDP.EXE/LDP%20%2811%29.png)
+
+**Continue the configuration (step 11 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 12
+
+![Step 1 — Connect to AD Using LDP.exe - Screenshot 12](01-CONNECT%20TO%20AD%20USING%20LDP.EXE/LDP%20%2812%29.png)
+
+**Continue the configuration (step 12 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 13
+
+![Step 1 — Connect to AD Using LDP.exe - Screenshot 13](01-CONNECT%20TO%20AD%20USING%20LDP.EXE/LDP%20%2813%29.png)
+
+**Continue the configuration (step 13 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 14
+
+![Step 1 — Connect to AD Using LDP.exe - Screenshot 14](01-CONNECT%20TO%20AD%20USING%20LDP.EXE/LDP%20%2814%29.png)
+
+**Continue the configuration (step 14 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 15
+
+![Step 1 — Connect to AD Using LDP.exe - Screenshot 15](01-CONNECT%20TO%20AD%20USING%20LDP.EXE/LDP%20%2815%29.png)
+
+**Continue the configuration (step 15 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 16
+
+![Step 1 — Connect to AD Using LDP.exe - Screenshot 16](01-CONNECT%20TO%20AD%20USING%20LDP.EXE/LDP%20%2816%29.png)
+
+**Continue the configuration (step 16 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 17
+
+![Step 1 — Connect to AD Using LDP.exe - Screenshot 17](01-CONNECT%20TO%20AD%20USING%20LDP.EXE/LDP%20%2817%29.png)
+
+**Continue the configuration (step 17 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 18
+
+![Step 1 — Connect to AD Using LDP.exe - Screenshot 18](01-CONNECT%20TO%20AD%20USING%20LDP.EXE/LDP%20%2818%29.png)
+
+**Continue the configuration (step 18 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 19
+
+![Step 1 — Connect to AD Using LDP.exe - Screenshot 19](01-CONNECT%20TO%20AD%20USING%20LDP.EXE/LDP%20%2819%29.png)
+
+**Continue the configuration (step 19 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 20
+
+![Step 1 — Connect to AD Using LDP.exe - Screenshot 20](01-CONNECT%20TO%20AD%20USING%20LDP.EXE/LDP%20%2820%29.png)
+
+**Continue the configuration (step 20 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 21
+
+![Step 1 — Connect to AD Using LDP.exe - Screenshot 21](01-CONNECT%20TO%20AD%20USING%20LDP.EXE/LDP%20%2821%29.png)
+
+**Continue the configuration (step 21 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 22
+
+![Step 1 — Connect to AD Using LDP.exe - Screenshot 22](01-CONNECT%20TO%20AD%20USING%20LDP.EXE/LDP%20%2822%29.png)
+
+**Continue the configuration (step 22 of 23) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 23
+
+![Step 1 — Connect to AD Using LDP.exe - Screenshot 23](01-CONNECT%20TO%20AD%20USING%20LDP.EXE/LDP%20%2823%29.png)
+
+**Final result — verify the configuration is complete and working.**
+
+---
+
+## Step 2 — Run LDAP Search Queries
+
+Execute LDAP queries in LDP to search the directory:
+
 ```
-CN=jsmith,OU=IT,OU=London HQ,DC=vertex,DC=local
+Base DN: DC=vertex,DC=local
+Filter: (&(objectClass=user)(department=IT))
+Scope: Subtree
 ```
 
+### Screenshot 1
+
+![Step 2 — Run LDAP Search Queries - Screenshot 1](02-RUN%20LDAP%20SEARCH%20QUERIES/SEARCH%20QUERIES-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 2 — Run LDAP Search Queries - Screenshot 2](02-RUN%20LDAP%20SEARCH%20QUERIES/SEARCH%20QUERIES-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 2 — Run LDAP Search Queries - Screenshot 3](02-RUN%20LDAP%20SEARCH%20QUERIES/SEARCH%20QUERIES-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 2 — Run LDAP Search Queries - Screenshot 4](02-RUN%20LDAP%20SEARCH%20QUERIES/SEARCH%20QUERIES-%20%284%29.png)
+
+**Continue the configuration (step 4 of 19) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 2 — Run LDAP Search Queries - Screenshot 5](02-RUN%20LDAP%20SEARCH%20QUERIES/SEARCH%20QUERIES-%20%285%29.png)
+
+**Continue the configuration (step 5 of 19) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 6
+
+![Step 2 — Run LDAP Search Queries - Screenshot 6](02-RUN%20LDAP%20SEARCH%20QUERIES/SEARCH%20QUERIES-%20%286%29.png)
+
+**Continue the configuration (step 6 of 19) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 7
+
+![Step 2 — Run LDAP Search Queries - Screenshot 7](02-RUN%20LDAP%20SEARCH%20QUERIES/SEARCH%20QUERIES-%20%287%29.png)
+
+**Continue the configuration (step 7 of 19) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 8
+
+![Step 2 — Run LDAP Search Queries - Screenshot 8](02-RUN%20LDAP%20SEARCH%20QUERIES/SEARCH%20QUERIES-%20%288%29.png)
+
+**Continue the configuration (step 8 of 19) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 9
+
+![Step 2 — Run LDAP Search Queries - Screenshot 9](02-RUN%20LDAP%20SEARCH%20QUERIES/SEARCH%20QUERIES-%20%289%29.png)
+
+**Continue the configuration (step 9 of 19) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 10
+
+![Step 2 — Run LDAP Search Queries - Screenshot 10](02-RUN%20LDAP%20SEARCH%20QUERIES/SEARCH%20QUERIES-%20%2810%29.png)
+
+**Continue the configuration (step 10 of 19) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 11
+
+![Step 2 — Run LDAP Search Queries - Screenshot 11](02-RUN%20LDAP%20SEARCH%20QUERIES/SEARCH%20QUERIES-%20%2811%29.png)
+
+**Continue the configuration (step 11 of 19) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 12
+
+![Step 2 — Run LDAP Search Queries - Screenshot 12](02-RUN%20LDAP%20SEARCH%20QUERIES/SEARCH%20QUERIES-%20%2812%29.png)
+
+**Continue the configuration (step 12 of 19) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 13
+
+![Step 2 — Run LDAP Search Queries - Screenshot 13](02-RUN%20LDAP%20SEARCH%20QUERIES/SEARCH%20QUERIES-%20%2813%29.png)
+
+**Continue the configuration (step 13 of 19) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 14
+
+![Step 2 — Run LDAP Search Queries - Screenshot 14](02-RUN%20LDAP%20SEARCH%20QUERIES/SEARCH%20QUERIES-%20%2814%29.png)
+
+**Continue the configuration (step 14 of 19) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 15
+
+![Step 2 — Run LDAP Search Queries - Screenshot 15](02-RUN%20LDAP%20SEARCH%20QUERIES/SEARCH%20QUERIES-%20%2815%29.png)
+
+**Continue the configuration (step 15 of 19) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 16
+
+![Step 2 — Run LDAP Search Queries - Screenshot 16](02-RUN%20LDAP%20SEARCH%20QUERIES/SEARCH%20QUERIES-%20%2816%29.png)
+
+**Continue the configuration (step 16 of 19) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 17
+
+![Step 2 — Run LDAP Search Queries - Screenshot 17](02-RUN%20LDAP%20SEARCH%20QUERIES/SEARCH%20QUERIES-%20%2817%29.png)
+
+**Continue the configuration (step 17 of 19) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 18
+
+![Step 2 — Run LDAP Search Queries - Screenshot 18](02-RUN%20LDAP%20SEARCH%20QUERIES/SEARCH%20QUERIES-%20%2818%29.png)
+
+**Continue the configuration (step 18 of 19) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 19
+
+![Step 2 — Run LDAP Search Queries - Screenshot 19](02-RUN%20LDAP%20SEARCH%20QUERIES/SEARCH%20QUERIES-%20%2819%29.png)
+
+**Final result — verify the configuration is complete and working.**
+
 ---
 
-## Steps
+## Step 3 — Modify an Attribute with LDP
 
-### 01 — Connect to AD Using LDP.exe
-Opened **LDP.exe** (built-in Windows LDAP browser) and connected to DC1:
+Use LDP.exe to modify a user attribute:
 
-- Host: `DC1.vertex.local`
-- Port: `389` (standard LDAP)
-- Checked `SSL` option: No (plain LDAP for initial exploration)
-
-Then **bound** (authenticated) using domain admin credentials to gain read/write access to the directory.
-
-**Screenshots:** `01-CONNECT TO AD USING LDP.EXE/` (10+ images)
-
----
-
-### 02 — Run LDAP Search Queries
-Used LDP.exe **Search** function to query the directory:
-
-Example queries run:
-
-```ldap
-# Find all users
-Filter: (objectClass=user)
-BaseDN: DC=vertex,DC=local
-
-# Find a specific user
-Filter: (&(objectClass=user)(sAMAccountName=jsmith))
-
-# Find all enabled users
-Filter: (&(objectClass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))
-
-# Find all computers
-Filter: (objectClass=computer)
-
-# Find all Domain Admins
-Filter: (&(objectClass=user)(memberOf=CN=Domain Admins,CN=Users,DC=vertex,DC=local))
+```
+Browse → Modify
+DN: CN=John Smith,OU=IT,OU=HQ-London,OU=VERTEX,DC=vertex,DC=local
+Attribute: description
+Values: Senior System Administrator
+Operation: Replace
 ```
 
-Explored the returned attributes: `cn`, `sAMAccountName`, `userPrincipalName`, `distinguishedName`, `pwdLastSet`, `lastLogon`, `userAccountControl`, `memberOf`.
+### Screenshot 1
 
-**Screenshots:** `02-RUN LDAP SEARCH QUERIES/`
+![Step 3 — Modify an Attribute with LDP - Screenshot 1](03-MODIFY%20AN%20ATTRIBUTE%20WITH%20LDP/MODIFY-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 3 — Modify an Attribute with LDP - Screenshot 2](03-MODIFY%20AN%20ATTRIBUTE%20WITH%20LDP/MODIFY-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 3 — Modify an Attribute with LDP - Screenshot 3](03-MODIFY%20AN%20ATTRIBUTE%20WITH%20LDP/MODIFY-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 3 — Modify an Attribute with LDP - Screenshot 4](03-MODIFY%20AN%20ATTRIBUTE%20WITH%20LDP/MODIFY-%20%284%29.png)
+
+**Continue the configuration (step 4 of 5) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 3 — Modify an Attribute with LDP - Screenshot 5](03-MODIFY%20AN%20ATTRIBUTE%20WITH%20LDP/MODIFY-%20%285%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-### 03 — Modify an Attribute with LDP
-Used LDP.exe to directly modify an AD object attribute (bypassing the GUI):
+## Step 4 — Install & Use Sysinternals ADExplorer
 
-- Selected a user object
-- Used **Modify** operation
-- Changed the `description` attribute to a test value
-- Verified the change appeared in ADUC immediately
+Download and run Sysinternals ADExplorer to visually browse the AD tree structure. Connect to `DC1.vertex.local` and explore objects, attributes, and permissions.
 
-This demonstrates that AD is fundamentally an LDAP database — the GUI tools are just LDAP clients.
+### Screenshot 1
 
-**Screenshots:** `03-MODIFY AN ATTRIBUTE WITH LDP/`
+![Step 4 — Install & Use Sysinternals ADExplorer - Screenshot 1](04-INSTALL%20AND%20USE%20ADEXPLORER/%20ADEXPLORER-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 4 — Install & Use Sysinternals ADExplorer - Screenshot 2](04-INSTALL%20AND%20USE%20ADEXPLORER/%20ADEXPLORER-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 4 — Install & Use Sysinternals ADExplorer - Screenshot 3](04-INSTALL%20AND%20USE%20ADEXPLORER/%20ADEXPLORER-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 4 — Install & Use Sysinternals ADExplorer - Screenshot 4](04-INSTALL%20AND%20USE%20ADEXPLORER/%20ADEXPLORER-%20%284%29.png)
+
+**Continue the configuration (step 4 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 4 — Install & Use Sysinternals ADExplorer - Screenshot 5](04-INSTALL%20AND%20USE%20ADEXPLORER/%20ADEXPLORER-%20%285%29.png)
+
+**Continue the configuration (step 5 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 6
+
+![Step 4 — Install & Use Sysinternals ADExplorer - Screenshot 6](04-INSTALL%20AND%20USE%20ADEXPLORER/%20ADEXPLORER-%20%286%29.png)
+
+**Continue the configuration (step 6 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 7
+
+![Step 4 — Install & Use Sysinternals ADExplorer - Screenshot 7](04-INSTALL%20AND%20USE%20ADEXPLORER/%20ADEXPLORER-%20%287%29.png)
+
+**Continue the configuration (step 7 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 8
+
+![Step 4 — Install & Use Sysinternals ADExplorer - Screenshot 8](04-INSTALL%20AND%20USE%20ADEXPLORER/%20ADEXPLORER-%20%288%29.png)
+
+**Continue the configuration (step 8 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 9
+
+![Step 4 — Install & Use Sysinternals ADExplorer - Screenshot 9](04-INSTALL%20AND%20USE%20ADEXPLORER/%20ADEXPLORER-%20%289%29.png)
+
+**Continue the configuration (step 9 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 10
+
+![Step 4 — Install & Use Sysinternals ADExplorer - Screenshot 10](04-INSTALL%20AND%20USE%20ADEXPLORER/%20ADEXPLORER-%20%2810%29.png)
+
+**Continue the configuration (step 10 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 11
+
+![Step 4 — Install & Use Sysinternals ADExplorer - Screenshot 11](04-INSTALL%20AND%20USE%20ADEXPLORER/%20ADEXPLORER-%20%2811%29.png)
+
+**Continue the configuration (step 11 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 12
+
+![Step 4 — Install & Use Sysinternals ADExplorer - Screenshot 12](04-INSTALL%20AND%20USE%20ADEXPLORER/%20ADEXPLORER-%20%2812%29.png)
+
+**Continue the configuration (step 12 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 13
+
+![Step 4 — Install & Use Sysinternals ADExplorer - Screenshot 13](04-INSTALL%20AND%20USE%20ADEXPLORER/%20ADEXPLORER-%20%2813%29.png)
+
+**Continue the configuration (step 13 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 14
+
+![Step 4 — Install & Use Sysinternals ADExplorer - Screenshot 14](04-INSTALL%20AND%20USE%20ADEXPLORER/%20ADEXPLORER-%20%2814%29.png)
+
+**Continue the configuration (step 14 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 15
+
+![Step 4 — Install & Use Sysinternals ADExplorer - Screenshot 15](04-INSTALL%20AND%20USE%20ADEXPLORER/%20ADEXPLORER-%20%2815%29.png)
+
+**Continue the configuration (step 15 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 16
+
+![Step 4 — Install & Use Sysinternals ADExplorer - Screenshot 16](04-INSTALL%20AND%20USE%20ADEXPLORER/%20ADEXPLORER-%20%2816%29.png)
+
+**Continue the configuration (step 16 of 17) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 17
+
+![Step 4 — Install & Use Sysinternals ADExplorer - Screenshot 17](04-INSTALL%20AND%20USE%20ADEXPLORER/%20ADEXPLORER-%20%2817%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-### 04 — Install and Use ADExplorer
-Downloaded and installed **Sysinternals ADExplorer** — a more user-friendly LDAP directory browser than LDP.exe.
+## Step 5 — LDAP Queries with PowerShell
 
-Used ADExplorer to:
-- Browse the entire AD tree visually
-- View all attributes of user, computer, and group objects
-- Take a **snapshot** of the AD database for offline analysis (a technique also used by attackers for AD enumeration)
-- Search for objects by any attribute
-
-**Screenshots:** `04-INSTALL AND USE ADEXPLORER/`
-
----
-
-### 05 — LDAP Queries with PowerShell
-Used PowerShell's `[adsisearcher]` and `Get-ADUser` with LDAP filters for programmatic AD queries:
+Run LDAP queries using PowerShell and the .NET DirectorySearcher:
 
 ```powershell
-# Using ADSISearcher (no RSAT required)
-$searcher = [adsisearcher]"(&(objectClass=user)(department=Finance))"
-$searcher.SearchRoot = [adsi]"LDAP://DC=vertex,DC=local"
-$searcher.FindAll() | ForEach-Object { $_.Properties.samaccountname }
-
 # Using Get-ADUser with LDAP filter
-Get-ADUser -LDAPFilter "(&(objectClass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))" `
-           -Properties Department, LastLogonDate | 
-           Select-Object Name, Department, LastLogonDate
+Get-ADUser -LDAPFilter '(department=IT)' -Properties *
+
+# Using DirectorySearcher
+$searcher = [adsisearcher]'(&(objectClass=user)(department=Finance))'
+$searcher.FindAll()
 ```
 
-**Screenshots:** `05-LDAP QUERIES WITH POWERSHELL/`
+### Screenshot 1
+
+![Step 5 — LDAP Queries with PowerShell - Screenshot 1](05-LDAP%20QUERIES%20WITH%20POWERSHELL/LDAP%20QUERIES-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 5 — LDAP Queries with PowerShell - Screenshot 2](05-LDAP%20QUERIES%20WITH%20POWERSHELL/LDAP%20QUERIES-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 5 — LDAP Queries with PowerShell - Screenshot 3](05-LDAP%20QUERIES%20WITH%20POWERSHELL/LDAP%20QUERIES-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 5 — LDAP Queries with PowerShell - Screenshot 4](05-LDAP%20QUERIES%20WITH%20POWERSHELL/LDAP%20QUERIES-%20%284%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-### 06 — Connect with LDAPS (Secure LDAP, Port 636)
-Established a secure **LDAPS** connection to DC1 on port **636** (LDAP over SSL/TLS):
+## Step 6 — Connect with LDAPS (Port 636)
 
-- Standard LDAP (port 389) sends data in plaintext — credentials are visible in packet captures
-- LDAPS encrypts the entire session
-- Requires a certificate on the DC (either from an internal CA or self-signed)
+Configure and test LDAPS (LDAP over SSL/TLS) on port 636:
 
-Configured LDP.exe to connect with SSL and verified the secure connection was established.
+```
+LDP.exe → Connection → Connect
+Server: DC1.vertex.local
+Port: 636
+☑ SSL
+```
 
-**Screenshots:** `06-CONNECT WITH LDAPS (SECURE LDAP, PORT 636)/`
+Note: LDAPS requires a certificate installed on the DC.
+
+### Screenshot 1
+
+![Step 6 — Connect with LDAPS (Port 636) - Screenshot 1](06-CONNECT%20WITH%20LDAPS%20(SECURE%20LDAP,%20PORT%20636)/PORT%20636-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 6 — Connect with LDAPS (Port 636) - Screenshot 2](06-CONNECT%20WITH%20LDAPS%20(SECURE%20LDAP,%20PORT%20636)/PORT%20636-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 6 — Connect with LDAPS (Port 636) - Screenshot 3](06-CONNECT%20WITH%20LDAPS%20(SECURE%20LDAP,%20PORT%20636)/PORT%20636-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 6 — Connect with LDAPS (Port 636) - Screenshot 4](06-CONNECT%20WITH%20LDAPS%20(SECURE%20LDAP,%20PORT%20636)/PORT%20636-%20%284%29.png)
+
+**Continue the configuration (step 4 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 6 — Connect with LDAPS (Port 636) - Screenshot 5](06-CONNECT%20WITH%20LDAPS%20(SECURE%20LDAP,%20PORT%20636)/PORT%20636-%20%285%29.png)
+
+**Continue the configuration (step 5 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 6
+
+![Step 6 — Connect with LDAPS (Port 636) - Screenshot 6](06-CONNECT%20WITH%20LDAPS%20(SECURE%20LDAP,%20PORT%20636)/PORT%20636-%20%286%29.png)
+
+**Continue the configuration (step 6 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 7
+
+![Step 6 — Connect with LDAPS (Port 636) - Screenshot 7](06-CONNECT%20WITH%20LDAPS%20(SECURE%20LDAP,%20PORT%20636)/PORT%20636-%20%287%29.png)
+
+**Continue the configuration (step 7 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 8
+
+![Step 6 — Connect with LDAPS (Port 636) - Screenshot 8](06-CONNECT%20WITH%20LDAPS%20(SECURE%20LDAP,%20PORT%20636)/PORT%20636-%20%288%29.png)
+
+**Continue the configuration (step 8 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 9
+
+![Step 6 — Connect with LDAPS (Port 636) - Screenshot 9](06-CONNECT%20WITH%20LDAPS%20(SECURE%20LDAP,%20PORT%20636)/PORT%20636-%20%289%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-## Key Concepts
+## 🔗 Navigation
 
-- AD is an LDAP v3 compliant directory — any LDAP client can query it
-- `userAccountControl` is a bitmask attribute encoding dozens of account properties (disabled, password never expires, trusted for delegation, etc.)
-- `distinguishedName` uniquely identifies every object in the directory
-- **LDAP filter syntax:** `(attribute=value)`, `(&(filter1)(filter2))` (AND), `(|(filter1)(filter2))` (OR), `(!(filter))` (NOT)
-- Always use **LDAPS** (port 636) or **LDAP with STARTTLS** (port 389 with upgrade) in production — plain LDAP on port 389 is a credential theft risk
-- ADExplorer snapshots are used by both defenders (AD baselines) and attackers (offline enumeration) — protect them accordingly
+[⬆️ Back to Top](#)
 
----
-
-## Tools Used
-
-`LDP.exe` · `Sysinternals ADExplorer` · `PowerShell (adsisearcher / ActiveDirectory module)` · `Wireshark` (optional, for LDAP packet inspection)
-
----
-
-*Previous: [Phase 09 — Kerberos](<../Phase 09 lab kerberos/README.md>) · Next: [Phase 11 — Enterprise Design](<../Phase 11 lab enterprise Design/README.md>)*
+[📚 Back to Master README](../README.md)

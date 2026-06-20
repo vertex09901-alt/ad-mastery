@@ -1,138 +1,537 @@
-# Phase 09 — Kerberos Authentication
+# 🎟️ Phase 09 — Kerberos Authentication
 
-> Observe Kerberos ticket flow using klist, manage Service Principal Names, verify time synchronisation, enforce AES encryption, configure constrained delegation, and inspect Kerberos events in Event Viewer.
+> **Observe Kerberos tickets with klist, manage SPNs (Service Principal Names), verify time synchronization (critical for Kerberos), enable AES-256 encryption on important accounts, configure Kerberos Constrained Delegation, and review Kerberos events in Event Viewer.**
+
+**Prerequisites:** Phase 08 completed — secure admin accounts configured.
+
+---
+## 📑 Table of Contents
+
+- [Step 1 — Observe Kerberos Tickets with klist](#step-1-observe-kerberos-tickets-with-klist)
+- [Step 2 — Manage SPNs (Service Principal Names)](#step-2-manage-spns-service-principal-names)
+- [Step 3 — Verify Time Synchronization](#step-3-verify-time-synchronization)
+- [Step 4 — Enable AES-256 Encryption](#step-4-enable-aes-256-encryption)
+- [Step 5 — Configure Kerberos Constrained Delegation](#step-5-configure-kerberos-constrained-delegation)
+- [Step 6 — Review Kerberos Events](#step-6-review-kerberos-events)
 
 ---
 
-## How Kerberos Works (Quick Reference)
+## Step 1 — Observe Kerberos Tickets with klist
 
-```
-1. Client → KDC (AS-REQ): "I'm jsmith, give me a TGT"
-2. KDC → Client (AS-REP): Here's your TGT (encrypted with krbtgt key)
-3. Client → KDC (TGS-REQ): "I want to access \\DC1\Finance, here's my TGT"
-4. KDC → Client (TGS-REP): Here's a Service Ticket for that share
-5. Client → Service (AP-REQ): Here's my Service Ticket
-6. Service → Client (AP-REP): Authenticated ✅
-```
-
-Domain: `vertex.local` · KDC: DC1 (PDC Emulator holds the master krbtgt key)
-
----
-
-## Steps
-
-### 01 — Observe Kerberos Tickets with klist
-Logged into CLIENT1 as a domain user and ran:
+Use the `klist` command to view cached Kerberos tickets:
 
 ```cmd
 klist
 klist tickets
+klist tgt
 ```
 
-Observed:
-- **TGT (Ticket Granting Ticket)** — issued by KDC, valid for 10 hours (default), proves identity
-- **Service Tickets** — one per service accessed (file shares, DC LDAP, etc.)
-- Ticket encryption type (RC4 vs AES256)
-- Expiry and renewal times
+Observe TGT (Ticket Granting Ticket) and service tickets.
 
-Also used `klist purge` to clear tickets and force re-authentication, observing new tickets being issued.
+### Screenshot 1
 
-**Screenshots:** `01-OBSERVE KERBEROS TICKETS WITH KLIST/` (21 images)
+![Step 1 — Observe Kerberos Tickets with klist - Screenshot 1](01-OBSERVE%20KERBEROS%20TICKETS%20WITH%20KLIST/KLIST-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 1 — Observe Kerberos Tickets with klist - Screenshot 2](01-OBSERVE%20KERBEROS%20TICKETS%20WITH%20KLIST/KLIST-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 1 — Observe Kerberos Tickets with klist - Screenshot 3](01-OBSERVE%20KERBEROS%20TICKETS%20WITH%20KLIST/KLIST-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 1 — Observe Kerberos Tickets with klist - Screenshot 4](01-OBSERVE%20KERBEROS%20TICKETS%20WITH%20KLIST/KLIST-%20%284%29.png)
+
+**Continue the configuration (step 4 of 21) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 1 — Observe Kerberos Tickets with klist - Screenshot 5](01-OBSERVE%20KERBEROS%20TICKETS%20WITH%20KLIST/KLIST-%20%285%29.png)
+
+**Continue the configuration (step 5 of 21) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 6
+
+![Step 1 — Observe Kerberos Tickets with klist - Screenshot 6](01-OBSERVE%20KERBEROS%20TICKETS%20WITH%20KLIST/KLIST-%20%286%29.png)
+
+**Continue the configuration (step 6 of 21) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 7
+
+![Step 1 — Observe Kerberos Tickets with klist - Screenshot 7](01-OBSERVE%20KERBEROS%20TICKETS%20WITH%20KLIST/KLIST-%20%287%29.png)
+
+**Continue the configuration (step 7 of 21) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 8
+
+![Step 1 — Observe Kerberos Tickets with klist - Screenshot 8](01-OBSERVE%20KERBEROS%20TICKETS%20WITH%20KLIST/KLIST-%20%288%29.png)
+
+**Continue the configuration (step 8 of 21) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 9
+
+![Step 1 — Observe Kerberos Tickets with klist - Screenshot 9](01-OBSERVE%20KERBEROS%20TICKETS%20WITH%20KLIST/KLIST-%20%289%29.png)
+
+**Continue the configuration (step 9 of 21) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 10
+
+![Step 1 — Observe Kerberos Tickets with klist - Screenshot 10](01-OBSERVE%20KERBEROS%20TICKETS%20WITH%20KLIST/KLIST-%20%2810%29.png)
+
+**Continue the configuration (step 10 of 21) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 11
+
+![Step 1 — Observe Kerberos Tickets with klist - Screenshot 11](01-OBSERVE%20KERBEROS%20TICKETS%20WITH%20KLIST/KLIST-%20%2811%29.png)
+
+**Continue the configuration (step 11 of 21) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 12
+
+![Step 1 — Observe Kerberos Tickets with klist - Screenshot 12](01-OBSERVE%20KERBEROS%20TICKETS%20WITH%20KLIST/KLIST-%20%2812%29.png)
+
+**Continue the configuration (step 12 of 21) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 13
+
+![Step 1 — Observe Kerberos Tickets with klist - Screenshot 13](01-OBSERVE%20KERBEROS%20TICKETS%20WITH%20KLIST/KLIST-%20%2813%29.png)
+
+**Continue the configuration (step 13 of 21) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 14
+
+![Step 1 — Observe Kerberos Tickets with klist - Screenshot 14](01-OBSERVE%20KERBEROS%20TICKETS%20WITH%20KLIST/KLIST-%20%2814%29.png)
+
+**Continue the configuration (step 14 of 21) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 15
+
+![Step 1 — Observe Kerberos Tickets with klist - Screenshot 15](01-OBSERVE%20KERBEROS%20TICKETS%20WITH%20KLIST/KLIST-%20%2815%29.png)
+
+**Continue the configuration (step 15 of 21) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 16
+
+![Step 1 — Observe Kerberos Tickets with klist - Screenshot 16](01-OBSERVE%20KERBEROS%20TICKETS%20WITH%20KLIST/KLIST-%20%2816%29.png)
+
+**Continue the configuration (step 16 of 21) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 17
+
+![Step 1 — Observe Kerberos Tickets with klist - Screenshot 17](01-OBSERVE%20KERBEROS%20TICKETS%20WITH%20KLIST/KLIST-%20%2817%29.png)
+
+**Continue the configuration (step 17 of 21) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 18
+
+![Step 1 — Observe Kerberos Tickets with klist - Screenshot 18](01-OBSERVE%20KERBEROS%20TICKETS%20WITH%20KLIST/KLIST-%20%2818%29.png)
+
+**Continue the configuration (step 18 of 21) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 19
+
+![Step 1 — Observe Kerberos Tickets with klist - Screenshot 19](01-OBSERVE%20KERBEROS%20TICKETS%20WITH%20KLIST/KLIST-%20%2819%29.png)
+
+**Continue the configuration (step 19 of 21) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 20
+
+![Step 1 — Observe Kerberos Tickets with klist - Screenshot 20](01-OBSERVE%20KERBEROS%20TICKETS%20WITH%20KLIST/KLIST-%20%2820%29.png)
+
+**Continue the configuration (step 20 of 21) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 21
+
+![Step 1 — Observe Kerberos Tickets with klist - Screenshot 21](01-OBSERVE%20KERBEROS%20TICKETS%20WITH%20KLIST/KLIST-%20%2821%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-### 02 — Manage SPNs (Service Principal Names)
-SPNs are how Kerberos identifies services. Used `setspn` to list, add, and verify SPNs:
+## Step 2 — Manage SPNs (Service Principal Names)
+
+Register and query SPNs for service accounts:
 
 ```cmd
-setspn -L DC1                    # List all SPNs on DC1
-setspn -Q */*                    # Query all SPNs in the domain
-setspn -S HTTP/webserver.vertex.local DC1   # Register an HTTP SPN
-setspn -D HTTP/webserver.vertex.local DC1   # Remove SPN (cleanup)
+setspn -L DC1
+setspn -Q */*
+setspn -S HTTP/webapp.vertex.local serviceaccount
 ```
 
-Identified duplicate SPNs (a common misconfiguration that breaks Kerberos authentication for services).
+### Screenshot 1
 
-**Screenshots:** `02-MANAGE SPNs (SERVICE PRINCIPAL NAMES)/` (18 images)
+![Step 2 — Manage SPNs (Service Principal Names) - Screenshot 1](02-MANAGE%20SPNs%20(SERVICE%20PRINCIPAL%20NAMES)/SPNs-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 2 — Manage SPNs (Service Principal Names) - Screenshot 2](02-MANAGE%20SPNs%20(SERVICE%20PRINCIPAL%20NAMES)/SPNs-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 2 — Manage SPNs (Service Principal Names) - Screenshot 3](02-MANAGE%20SPNs%20(SERVICE%20PRINCIPAL%20NAMES)/SPNs-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 2 — Manage SPNs (Service Principal Names) - Screenshot 4](02-MANAGE%20SPNs%20(SERVICE%20PRINCIPAL%20NAMES)/SPNs-%20%284%29.png)
+
+**Continue the configuration (step 4 of 18) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 2 — Manage SPNs (Service Principal Names) - Screenshot 5](02-MANAGE%20SPNs%20(SERVICE%20PRINCIPAL%20NAMES)/SPNs-%20%285%29.png)
+
+**Continue the configuration (step 5 of 18) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 6
+
+![Step 2 — Manage SPNs (Service Principal Names) - Screenshot 6](02-MANAGE%20SPNs%20(SERVICE%20PRINCIPAL%20NAMES)/SPNs-%20%286%29.png)
+
+**Continue the configuration (step 6 of 18) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 7
+
+![Step 2 — Manage SPNs (Service Principal Names) - Screenshot 7](02-MANAGE%20SPNs%20(SERVICE%20PRINCIPAL%20NAMES)/SPNs-%20%287%29.png)
+
+**Continue the configuration (step 7 of 18) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 8
+
+![Step 2 — Manage SPNs (Service Principal Names) - Screenshot 8](02-MANAGE%20SPNs%20(SERVICE%20PRINCIPAL%20NAMES)/SPNs-%20%288%29.png)
+
+**Continue the configuration (step 8 of 18) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 9
+
+![Step 2 — Manage SPNs (Service Principal Names) - Screenshot 9](02-MANAGE%20SPNs%20(SERVICE%20PRINCIPAL%20NAMES)/SPNs-%20%289%29.png)
+
+**Continue the configuration (step 9 of 18) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 10
+
+![Step 2 — Manage SPNs (Service Principal Names) - Screenshot 10](02-MANAGE%20SPNs%20(SERVICE%20PRINCIPAL%20NAMES)/SPNs-%20%2810%29.png)
+
+**Continue the configuration (step 10 of 18) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 11
+
+![Step 2 — Manage SPNs (Service Principal Names) - Screenshot 11](02-MANAGE%20SPNs%20(SERVICE%20PRINCIPAL%20NAMES)/SPNs-%20%2811%29.png)
+
+**Continue the configuration (step 11 of 18) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 12
+
+![Step 2 — Manage SPNs (Service Principal Names) - Screenshot 12](02-MANAGE%20SPNs%20(SERVICE%20PRINCIPAL%20NAMES)/SPNs-%20%2812%29.png)
+
+**Continue the configuration (step 12 of 18) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 13
+
+![Step 2 — Manage SPNs (Service Principal Names) - Screenshot 13](02-MANAGE%20SPNs%20(SERVICE%20PRINCIPAL%20NAMES)/SPNs-%20%2813%29.png)
+
+**Continue the configuration (step 13 of 18) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 14
+
+![Step 2 — Manage SPNs (Service Principal Names) - Screenshot 14](02-MANAGE%20SPNs%20(SERVICE%20PRINCIPAL%20NAMES)/SPNs-%20%2814%29.png)
+
+**Continue the configuration (step 14 of 18) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 15
+
+![Step 2 — Manage SPNs (Service Principal Names) - Screenshot 15](02-MANAGE%20SPNs%20(SERVICE%20PRINCIPAL%20NAMES)/SPNs-%20%2815%29.png)
+
+**Continue the configuration (step 15 of 18) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 16
+
+![Step 2 — Manage SPNs (Service Principal Names) - Screenshot 16](02-MANAGE%20SPNs%20(SERVICE%20PRINCIPAL%20NAMES)/SPNs-%20%2816%29.png)
+
+**Continue the configuration (step 16 of 18) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 17
+
+![Step 2 — Manage SPNs (Service Principal Names) - Screenshot 17](02-MANAGE%20SPNs%20(SERVICE%20PRINCIPAL%20NAMES)/SPNs-%20%2817%29.png)
+
+**Continue the configuration (step 17 of 18) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 18
+
+![Step 2 — Manage SPNs (Service Principal Names) - Screenshot 18](02-MANAGE%20SPNs%20(SERVICE%20PRINCIPAL%20NAMES)/SPNs-%20%2818%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-### 03 — Verify Time Synchronisation
-Kerberos has a strict **5-minute clock skew tolerance** — if clocks are more than 5 minutes apart, authentication fails with `KRB_AP_ERR_SKEW`.
+## Step 3 — Verify Time Synchronization
 
-Verified the NTP hierarchy:
-- DC1 (PDC Emulator) → synchronises to an external NTP source (`time.windows.com`)
-- DC2 → synchronises to DC1
-- CLIENT1 → synchronises to DC1
+Kerberos requires clocks to be within 5 minutes. Verify NTP sync:
 
 ```cmd
-w32tm /query /status           # Check current time sync status
-w32tm /query /peers            # Check NTP peers
-w32tm /resync /force           # Force an immediate sync
+w32tm /query /status
+w32tm /query /source
+w32tm /resync
 ```
 
-**Screenshots:** `03-VERIFY TIME SYNCHRONIZATION/` (9 images)
+### Screenshot 1
+
+![Step 3 — Verify Time Synchronization - Screenshot 1](03-VERIFY%20TIME%20SYNCHRONIZATION/SYNCHRONIZATION-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 3 — Verify Time Synchronization - Screenshot 2](03-VERIFY%20TIME%20SYNCHRONIZATION/SYNCHRONIZATION-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 3 — Verify Time Synchronization - Screenshot 3](03-VERIFY%20TIME%20SYNCHRONIZATION/SYNCHRONIZATION-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 3 — Verify Time Synchronization - Screenshot 4](03-VERIFY%20TIME%20SYNCHRONIZATION/SYNCHRONIZATION-%20%284%29.png)
+
+**Continue the configuration (step 4 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 3 — Verify Time Synchronization - Screenshot 5](03-VERIFY%20TIME%20SYNCHRONIZATION/SYNCHRONIZATION-%20%285%29.png)
+
+**Continue the configuration (step 5 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 6
+
+![Step 3 — Verify Time Synchronization - Screenshot 6](03-VERIFY%20TIME%20SYNCHRONIZATION/SYNCHRONIZATION-%20%286%29.png)
+
+**Continue the configuration (step 6 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 7
+
+![Step 3 — Verify Time Synchronization - Screenshot 7](03-VERIFY%20TIME%20SYNCHRONIZATION/SYNCHRONIZATION-%20%287%29.png)
+
+**Continue the configuration (step 7 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 8
+
+![Step 3 — Verify Time Synchronization - Screenshot 8](03-VERIFY%20TIME%20SYNCHRONIZATION/SYNCHRONIZATION-%20%288%29.png)
+
+**Continue the configuration (step 8 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 9
+
+![Step 3 — Verify Time Synchronization - Screenshot 9](03-VERIFY%20TIME%20SYNCHRONIZATION/SYNCHRONIZATION-%20%289%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-### 04 — Enable AES Encryption on Important Accounts
-Updated privileged accounts and service accounts to use **AES-256** encryption instead of the weaker RC4 (NTLM-compatible) encryption:
+## Step 4 — Enable AES-256 Encryption
 
-In ADUC → Account tab → Account options:
-- ✅ `This account supports Kerberos AES 128 bit encryption`
-- ✅ `This account supports Kerberos AES 256 bit encryption`
-- ❌ (Optionally) unchecked `Use DES encryption types for this account`
+Enable AES-256 encryption on important accounts for stronger Kerberos security. In ADUC → account properties → Account Options → check:
 
-After enabling, verified tickets showed `Etype: AES-256-CTS-HMAC-SHA1-96` in `klist`.
+- ✅ This account supports Kerberos AES 128-bit encryption
+- ✅ This account supports Kerberos AES 256-bit encryption
 
-**Screenshots:** `04-ENABLE AES ENCRYPTION ON IMPORTANT ACCOUNTS/` (9 images)
+### Screenshot 1
+
+![Step 4 — Enable AES-256 Encryption - Screenshot 1](04-ENABLE%20AES%20ENCRYPTION%20ON%20IMPORTANT%20ACCOUNTS/AES%20ENCRYPTION%20-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 4 — Enable AES-256 Encryption - Screenshot 2](04-ENABLE%20AES%20ENCRYPTION%20ON%20IMPORTANT%20ACCOUNTS/AES%20ENCRYPTION%20-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 4 — Enable AES-256 Encryption - Screenshot 3](04-ENABLE%20AES%20ENCRYPTION%20ON%20IMPORTANT%20ACCOUNTS/AES%20ENCRYPTION%20-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 4 — Enable AES-256 Encryption - Screenshot 4](04-ENABLE%20AES%20ENCRYPTION%20ON%20IMPORTANT%20ACCOUNTS/AES%20ENCRYPTION%20-%20%284%29.png)
+
+**Continue the configuration (step 4 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 4 — Enable AES-256 Encryption - Screenshot 5](04-ENABLE%20AES%20ENCRYPTION%20ON%20IMPORTANT%20ACCOUNTS/AES%20ENCRYPTION%20-%20%285%29.png)
+
+**Continue the configuration (step 5 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 6
+
+![Step 4 — Enable AES-256 Encryption - Screenshot 6](04-ENABLE%20AES%20ENCRYPTION%20ON%20IMPORTANT%20ACCOUNTS/AES%20ENCRYPTION%20-%20%286%29.png)
+
+**Continue the configuration (step 6 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 7
+
+![Step 4 — Enable AES-256 Encryption - Screenshot 7](04-ENABLE%20AES%20ENCRYPTION%20ON%20IMPORTANT%20ACCOUNTS/AES%20ENCRYPTION%20-%20%287%29.png)
+
+**Continue the configuration (step 7 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 8
+
+![Step 4 — Enable AES-256 Encryption - Screenshot 8](04-ENABLE%20AES%20ENCRYPTION%20ON%20IMPORTANT%20ACCOUNTS/AES%20ENCRYPTION%20-%20%288%29.png)
+
+**Continue the configuration (step 8 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 9
+
+![Step 4 — Enable AES-256 Encryption - Screenshot 9](04-ENABLE%20AES%20ENCRYPTION%20ON%20IMPORTANT%20ACCOUNTS/AES%20ENCRYPTION%20-%20%289%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-### 05 — Configure Kerberos Constrained Delegation
-Configured **Constrained Delegation** for a service account (`svc_web`) to allow it to request Kerberos tickets on behalf of users, but only to specific services:
+## Step 5 — Configure Kerberos Constrained Delegation
 
-In ADUC → svc_web → Delegation tab:
-- Selected: **Trust this user for delegation to specified services only**
-- Added: `HTTP/webserver.vertex.local`
+Set up Kerberos Constrained Delegation for service accounts to delegate authentication only to specific services:
 
-This simulates how a web application can access a backend SQL server *as the logged-in user* without exposing that user's credentials.
+```
+Service Account Properties → Delegation tab
+→ Trust this user for delegation to specified services only
+→ Use Kerberos only
+→ Add the target service SPN
+```
 
-**Screenshots:** `05-CONFIGURE KERBEROS CONSTRAINED DELEGATION/` (13 images)
+### Screenshot 1
+
+![Step 5 — Configure Kerberos Constrained Delegation - Screenshot 1](05-CONFIGURE%20KERBEROS%20CONSTRAINED%20DELEGATION/DELEGATION-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 5 — Configure Kerberos Constrained Delegation - Screenshot 2](05-CONFIGURE%20KERBEROS%20CONSTRAINED%20DELEGATION/DELEGATION-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 5 — Configure Kerberos Constrained Delegation - Screenshot 3](05-CONFIGURE%20KERBEROS%20CONSTRAINED%20DELEGATION/DELEGATION-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 5 — Configure Kerberos Constrained Delegation - Screenshot 4](05-CONFIGURE%20KERBEROS%20CONSTRAINED%20DELEGATION/DELEGATION-%20%284%29.png)
+
+**Continue the configuration (step 4 of 13) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 5 — Configure Kerberos Constrained Delegation - Screenshot 5](05-CONFIGURE%20KERBEROS%20CONSTRAINED%20DELEGATION/DELEGATION-%20%285%29.png)
+
+**Continue the configuration (step 5 of 13) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 6
+
+![Step 5 — Configure Kerberos Constrained Delegation - Screenshot 6](05-CONFIGURE%20KERBEROS%20CONSTRAINED%20DELEGATION/DELEGATION-%20%286%29.png)
+
+**Continue the configuration (step 6 of 13) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 7
+
+![Step 5 — Configure Kerberos Constrained Delegation - Screenshot 7](05-CONFIGURE%20KERBEROS%20CONSTRAINED%20DELEGATION/DELEGATION-%20%287%29.png)
+
+**Continue the configuration (step 7 of 13) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 8
+
+![Step 5 — Configure Kerberos Constrained Delegation - Screenshot 8](05-CONFIGURE%20KERBEROS%20CONSTRAINED%20DELEGATION/DELEGATION-%20%288%29.png)
+
+**Continue the configuration (step 8 of 13) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 9
+
+![Step 5 — Configure Kerberos Constrained Delegation - Screenshot 9](05-CONFIGURE%20KERBEROS%20CONSTRAINED%20DELEGATION/DELEGATION-%20%289%29.png)
+
+**Continue the configuration (step 9 of 13) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 10
+
+![Step 5 — Configure Kerberos Constrained Delegation - Screenshot 10](05-CONFIGURE%20KERBEROS%20CONSTRAINED%20DELEGATION/DELEGATION-%20%2810%29.png)
+
+**Continue the configuration (step 10 of 13) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 11
+
+![Step 5 — Configure Kerberos Constrained Delegation - Screenshot 11](05-CONFIGURE%20KERBEROS%20CONSTRAINED%20DELEGATION/DELEGATION-%20%2811%29.png)
+
+**Continue the configuration (step 11 of 13) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 12
+
+![Step 5 — Configure Kerberos Constrained Delegation - Screenshot 12](05-CONFIGURE%20KERBEROS%20CONSTRAINED%20DELEGATION/DELEGATION-%20%2812%29.png)
+
+**Continue the configuration (step 12 of 13) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 13
+
+![Step 5 — Configure Kerberos Constrained Delegation - Screenshot 13](05-CONFIGURE%20KERBEROS%20CONSTRAINED%20DELEGATION/DELEGATION-%20%2813%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-### 06 — Look at Kerberos Events in Event Viewer
-Filtered **Security** event log on DC1 for Kerberos-specific events:
+## Step 6 — Review Kerberos Events
 
-| Event ID | Description |
-|----------|-------------|
-| 4768 | Kerberos TGT requested (AS-REQ) |
-| 4769 | Kerberos service ticket requested (TGS-REQ) |
-| 4770 | Kerberos service ticket renewed |
-| 4771 | Kerberos pre-authentication failed |
-| 4772 | Kerberos authentication ticket request failed |
+Open **Event Viewer → Windows Logs → Security** and filter for Kerberos events:
 
-Observed live TGT and TGS requests as users logged in and accessed resources.
+- Event ID 4768 — TGT Request (AS-REQ)
+- Event ID 4769 — Service Ticket Request (TGS-REQ)
+- Event ID 4771 — Kerberos Pre-Authentication Failed
 
-**Screenshots:** `06-LOOK AT KERBEROS EVENTS IN EVENT VIEWER/` (4 images)
+### Screenshot 1
+
+![Step 6 — Review Kerberos Events - Screenshot 1](06-LOOK%20AT%20KERBEROS%20EVENTS%20IN%20EVENT%20VIEWER/EVENT%20VIEWER-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 6 — Review Kerberos Events - Screenshot 2](06-LOOK%20AT%20KERBEROS%20EVENTS%20IN%20EVENT%20VIEWER/EVENT%20VIEWER-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 6 — Review Kerberos Events - Screenshot 3](06-LOOK%20AT%20KERBEROS%20EVENTS%20IN%20EVENT%20VIEWER/EVENT%20VIEWER-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 6 — Review Kerberos Events - Screenshot 4](06-LOOK%20AT%20KERBEROS%20EVENTS%20IN%20EVENT%20VIEWER/EVENT%20VIEWER-%20%284%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-## Key Concepts
+## 🔗 Navigation
 
-- **TGT** is your "day pass" — presented to the KDC to get service tickets without re-entering your password
-- **SPNs** map service names to AD accounts — if an SPN is missing or duplicated, Kerberos falls back to NTLM (or fails entirely)
-- **RC4 (NTLM-compat)** Kerberos tickets are vulnerable to **Kerberoasting** — AES tickets are not
-- **Constrained delegation** is safer than unconstrained delegation (which allows impersonation to *any* service)
-- Clock skew is the #1 cause of mysterious Kerberos failures in new environments
+[⬆️ Back to Top](#)
 
----
-
-## Tools Used
-
-`klist` · `setspn` · `w32tm` · `Active Directory Users and Computers` · `Event Viewer`
-
----
-
-*Previous: [Phase 08 — AD Security](<../Phase 08 lab ad security/README.md>) · Next: [Phase 10 — LDAP](<../Phase 10 lab ldap/README.md>)*
+[📚 Back to Master README](../README.md)

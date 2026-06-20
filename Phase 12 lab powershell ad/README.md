@@ -1,232 +1,419 @@
-# Phase 12 — PowerShell Automation
+# ⚡ Phase 12 — PowerShell AD Automation
 
-> Build a library of PowerShell scripts for Active Directory administration: user lifecycle management, group management, AD reporting, JML (Joiner-Mover-Leaver) automation, and security auditing.
+> **Prepare a scripts folder, create PowerShell scripts for user management, group management, AD reporting, JML (Joiner-Mover-Leaver) automation, and security auditing.**
+
+**Prerequisites:** All prior phases completed — full AD environment ready for automation.
+
+---
+## 📑 Table of Contents
+
+- [Step 1 — Prepare the Scripts Folder](#step-1-prepare-the-scripts-folder)
+- [Step 2 — User Management Script](#step-2-user-management-script)
+- [Step 3 — Group Management Script](#step-3-group-management-script)
+- [Step 4 — AD Reporting Script](#step-4-ad-reporting-script)
+- [Step 5 — JML (Joiner-Mover-Leaver) Automation](#step-5-jml-joiner-mover-leaver-automation)
+- [Step 6 — Security Audit Script](#step-6-security-audit-script)
 
 ---
 
-## Setup
+## Step 1 — Prepare the Scripts Folder
 
-### 01 — Prepare the Scripts Folder
-Created a dedicated scripts directory on DC1 and configured the PowerShell execution policy:
+Create a dedicated folder for PowerShell AD scripts:
 
 ```powershell
-# Create scripts folder
-New-Item -Path "C:\Scripts\AD-Admin" -ItemType Directory
-
-# Set execution policy to allow local scripts
-Set-ExecutionPolicy RemoteSigned -Scope LocalMachine
-
-# Verify the ActiveDirectory module is available
-Import-Module ActiveDirectory
-Get-Command -Module ActiveDirectory | Measure-Object
+New-Item -Path C:\Scripts -ItemType Directory
+Set-Location C:\Scripts
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
-**Screenshots:** `01-PREPARE THE SCRIPTS FOLDER/`
+### Screenshot 1
+
+![Step 1 — Prepare the Scripts Folder - Screenshot 1](01-PREPARE%20THE%20SCRIPTS%20FOLDER/SCRIPTS%20-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 1 — Prepare the Scripts Folder - Screenshot 2](01-PREPARE%20THE%20SCRIPTS%20FOLDER/SCRIPTS%20-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 1 — Prepare the Scripts Folder - Screenshot 3](01-PREPARE%20THE%20SCRIPTS%20FOLDER/SCRIPTS%20-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 1 — Prepare the Scripts Folder - Screenshot 4](01-PREPARE%20THE%20SCRIPTS%20FOLDER/SCRIPTS%20-%20%284%29.png)
+
+**Continue the configuration (step 4 of 10) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 1 — Prepare the Scripts Folder - Screenshot 5](01-PREPARE%20THE%20SCRIPTS%20FOLDER/SCRIPTS%20-%20%285%29.png)
+
+**Continue the configuration (step 5 of 10) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 6
+
+![Step 1 — Prepare the Scripts Folder - Screenshot 6](01-PREPARE%20THE%20SCRIPTS%20FOLDER/SCRIPTS%20-%20%286%29.png)
+
+**Continue the configuration (step 6 of 10) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 7
+
+![Step 1 — Prepare the Scripts Folder - Screenshot 7](01-PREPARE%20THE%20SCRIPTS%20FOLDER/SCRIPTS%20-%20%287%29.png)
+
+**Continue the configuration (step 7 of 10) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 8
+
+![Step 1 — Prepare the Scripts Folder - Screenshot 8](01-PREPARE%20THE%20SCRIPTS%20FOLDER/SCRIPTS%20-%20%288%29.png)
+
+**Continue the configuration (step 8 of 10) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 9
+
+![Step 1 — Prepare the Scripts Folder - Screenshot 9](01-PREPARE%20THE%20SCRIPTS%20FOLDER/SCRIPTS%20-%20%289%29.png)
+
+**Continue the configuration (step 9 of 10) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 10
+
+![Step 1 — Prepare the Scripts Folder - Screenshot 10](01-PREPARE%20THE%20SCRIPTS%20FOLDER/SCRIPTS%20-%20%2810%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-## Scripts
+## Step 2 — User Management Script
 
-### 02 — User Management Script
-Covers full user account lifecycle:
+Create a PowerShell script for common user management tasks:
 
 ```powershell
-# New-VertexUser.ps1
-# Create a new AD user with standard attributes
-function New-VertexUser {
-    param(
-        [string]$FirstName,
-        [string]$LastName,
-        [string]$Department,
-        [string]$JobTitle
-    )
-    $SamAccountName = "$($FirstName[0])$LastName".ToLower()
-    $UPN = "$SamAccountName@vertex.local"
-    $OU = "OU=$Department,OU=London HQ,DC=vertex,DC=local"
+# Create a new user
+New-ADUser -Name 'Test User' -SamAccountName 'test.user' ...
 
-    New-ADUser `
-        -Name "$FirstName $LastName" `
-        -GivenName $FirstName `
-        -Surname $LastName `
-        -SamAccountName $SamAccountName `
-        -UserPrincipalName $UPN `
-        -Department $Department `
-        -Title $JobTitle `
-        -Path $OU `
-        -AccountPassword (ConvertTo-SecureString "TempP@ss123!" -AsPlainText -Force) `
-        -ChangePasswordAtLogon $true `
-        -Enabled $true
+# Disable a user
+Disable-ADAccount -Identity 'test.user'
 
-    Write-Host "Created user: $SamAccountName in $OU"
-}
+# Reset password
+Set-ADAccountPassword -Identity 'test.user' -Reset ...
+
+# Unlock account
+Unlock-ADAccount -Identity 'test.user'
 ```
 
-Also included: `Disable-VertexUser`, `Reset-VertexUserPassword`, `Move-VertexUserOU`
+### Screenshot 1
 
-**Screenshots:** `02-User-Management-Script/`
+![Step 2 — User Management Script - Screenshot 1](02-User-Management-Script/User-Management-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 2 — User Management Script - Screenshot 2](02-User-Management-Script/User-Management-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 2 — User Management Script - Screenshot 3](02-User-Management-Script/User-Management-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 2 — User Management Script - Screenshot 4](02-User-Management-Script/User-Management-%20%284%29.png)
+
+**Continue the configuration (step 4 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 2 — User Management Script - Screenshot 5](02-User-Management-Script/User-Management-%20%285%29.png)
+
+**Continue the configuration (step 5 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 6
+
+![Step 2 — User Management Script - Screenshot 6](02-User-Management-Script/User-Management-%20%286%29.png)
+
+**Continue the configuration (step 6 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 7
+
+![Step 2 — User Management Script - Screenshot 7](02-User-Management-Script/User-Management-%20%287%29.png)
+
+**Continue the configuration (step 7 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 8
+
+![Step 2 — User Management Script - Screenshot 8](02-User-Management-Script/User-Management-%20%288%29.png)
+
+**Continue the configuration (step 8 of 9) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 9
+
+![Step 2 — User Management Script - Screenshot 9](02-User-Management-Script/User-Management-%20%289%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-### 03 — Group Management Script
-Automate group membership management:
+## Step 3 — Group Management Script
+
+PowerShell script for group operations:
 
 ```powershell
-# Add-UsersToGroup.ps1
-# Add all users in a department OU to the corresponding global group
-function Sync-DepartmentGroup {
-    param([string]$Department)
-    
-    $OU = "OU=$Department,OU=London HQ,DC=vertex,DC=local"
-    $GroupName = "GG_$Department"
-    
-    $Users = Get-ADUser -Filter * -SearchBase $OU
-    $Users | ForEach-Object {
-        Add-ADGroupMember -Identity $GroupName -Members $_ -ErrorAction SilentlyContinue
-    }
-    Write-Host "Synced $($Users.Count) users to $GroupName"
-}
+# Create group
+New-ADGroup -Name 'G_ProjectAlpha' -GroupScope Global ...
 
-# Get all members of a group with details
-function Get-GroupMembersDetailed {
-    param([string]$GroupName)
-    Get-ADGroupMember -Identity $GroupName -Recursive |
-        Get-ADUser -Properties Department, Title, LastLogonDate |
-        Select-Object Name, SamAccountName, Department, Title, LastLogonDate
-}
+# Add members
+Add-ADGroupMember -Identity 'G_ProjectAlpha' -Members 'user1','user2'
+
+# List group members
+Get-ADGroupMember -Identity 'G_IT' | Select Name
 ```
 
-**Screenshots:** `03-Group-Management-Script/`
+### Screenshot 1
+
+![Step 3 — Group Management Script - Screenshot 1](03-Group-Management-Script/Group-Management-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 3 — Group Management Script - Screenshot 2](03-Group-Management-Script/Group-Management-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 3 — Group Management Script - Screenshot 3](03-Group-Management-Script/Group-Management-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 3 — Group Management Script - Screenshot 4](03-Group-Management-Script/Group-Management-%20%284%29.png)
+
+**Continue the configuration (step 4 of 5) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 3 — Group Management Script - Screenshot 5](03-Group-Management-Script/Group-Management-%20%285%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-### 04 — Reporting Script
-Generate AD health and inventory reports:
+## Step 4 — AD Reporting Script
+
+Create PowerShell reports for AD environment:
 
 ```powershell
-# AD-Report.ps1
-# Export all users with key attributes to CSV
-Get-ADUser -Filter * -Properties Department, Title, LastLogonDate, PasswordLastSet, Enabled |
-    Select-Object Name, SamAccountName, Department, Title, LastLogonDate, PasswordLastSet, Enabled |
-    Export-Csv -Path "C:\Scripts\Reports\AllUsers_$(Get-Date -f yyyyMMdd).csv" -NoTypeInformation
+# Users last logon report
+Get-ADUser -Filter * -Properties LastLogonDate |
+    Select Name, LastLogonDate | Export-Csv C:\Reports\LastLogon.csv
 
-# Find accounts that haven't logged in for 30+ days
-$CutoffDate = (Get-Date).AddDays(-30)
-Get-ADUser -Filter {LastLogonDate -lt $CutoffDate -and Enabled -eq $true} `
-           -Properties LastLogonDate |
-    Select-Object Name, SamAccountName, LastLogonDate |
-    Export-Csv -Path "C:\Scripts\Reports\StaleAccounts.csv" -NoTypeInformation
+# Disabled accounts
+Search-ADAccount -AccountDisabled | Select Name, DistinguishedName
 
-# Password expiry report — users expiring in next 14 days
-Search-ADAccount -AccountExpiring -TimeSpan "14.00:00:00" |
-    Select-Object Name, SamAccountName, AccountExpirationDate |
-    Export-Csv -Path "C:\Scripts\Reports\ExpiringAccounts.csv" -NoTypeInformation
+# Password expiring soon
+Search-ADAccount -PasswordExpiring -TimeSpan '7.00:00:00'
 ```
 
-**Screenshots:** `04-Reporting-Script/`
+### Screenshot 1
+
+![Step 4 — AD Reporting Script - Screenshot 1](04-Reporting-Script/Reporting-Script-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 4 — AD Reporting Script - Screenshot 2](04-Reporting-Script/Reporting-Script-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 4 — AD Reporting Script - Screenshot 3](04-Reporting-Script/Reporting-Script-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 4 — AD Reporting Script - Screenshot 4](04-Reporting-Script/Reporting-Script-%20%284%29.png)
+
+**Continue the configuration (step 4 of 6) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 4 — AD Reporting Script - Screenshot 5](04-Reporting-Script/Reporting-Script-%20%285%29.png)
+
+**Continue the configuration (step 5 of 6) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 6
+
+![Step 4 — AD Reporting Script - Screenshot 6](04-Reporting-Script/Reporting-Script-%20%286%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-### 05 — JML Automation Script
-**Joiner-Mover-Leaver** automation — the three core user lifecycle events in any organisation:
+## Step 5 — JML (Joiner-Mover-Leaver) Automation
+
+Automate the user lifecycle:
 
 ```powershell
-# JML-Process.ps1
-
 # JOINER — New employee onboarding
-function Invoke-Joiner { 
-    param($CsvPath)
-    Import-Csv $CsvPath | ForEach-Object {
-        # Create account, add to groups, set manager, send welcome email notification
-    }
-}
+function New-Employee { ... }
 
-# MOVER — Employee changes department
-function Invoke-Mover {
-    param($SamAccountName, $NewDepartment)
-    $User = Get-ADUser $SamAccountName -Properties MemberOf
-    # Remove from old department groups
-    $User.MemberOf | Remove-ADGroupMember -Members $User -Confirm:$false
-    # Move to new OU
-    Move-ADObject -Identity $User -TargetPath "OU=$NewDepartment,OU=London HQ,DC=vertex,DC=local"
-    # Add to new department groups
-    Add-ADGroupMember -Identity "GG_$NewDepartment" -Members $User
-    Set-ADUser $User -Department $NewDepartment
-}
+# MOVER — Department transfer
+function Move-Employee { ... }
 
-# LEAVER — Employee offboarding
-function Invoke-Leaver {
-    param($SamAccountName)
-    # Disable account immediately
-    Disable-ADAccount -Identity $SamAccountName
-    # Move to Disabled Users OU
-    Move-ADObject -Identity (Get-ADUser $SamAccountName) -TargetPath "OU=Disabled,DC=vertex,DC=local"
-    # Remove all group memberships
-    (Get-ADUser $SamAccountName -Properties MemberOf).MemberOf | 
-        ForEach-Object { Remove-ADGroupMember -Identity $_ -Members $SamAccountName -Confirm:$false }
-    # Set account description with leaver date
-    Set-ADUser $SamAccountName -Description "LEAVER: $(Get-Date -f yyyy-MM-dd)"
+# LEAVER — Offboarding
+function Remove-Employee {
+    Disable-ADAccount -Identity $user
+    Move-ADObject ... -TargetPath 'OU=Disabled,...'
+    Remove-ADGroupMember ...
 }
 ```
 
-**Screenshots:** `05-JML-Automation-Script/`
+### Screenshot 1
+
+![Step 5 — JML (Joiner-Mover-Leaver) Automation - Screenshot 1](05-JML-Automation-Script/JML-Automation-Script-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 5 — JML (Joiner-Mover-Leaver) Automation - Screenshot 2](05-JML-Automation-Script/JML-Automation-Script-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 5 — JML (Joiner-Mover-Leaver) Automation - Screenshot 3](05-JML-Automation-Script/JML-Automation-Script-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 5 — JML (Joiner-Mover-Leaver) Automation - Screenshot 4](05-JML-Automation-Script/JML-Automation-Script-%20%284%29.png)
+
+**Continue the configuration (step 4 of 7) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 5 — JML (Joiner-Mover-Leaver) Automation - Screenshot 5](05-JML-Automation-Script/JML-Automation-Script-%20%285%29.png)
+
+**Continue the configuration (step 5 of 7) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 6
+
+![Step 5 — JML (Joiner-Mover-Leaver) Automation - Screenshot 6](05-JML-Automation-Script/JML-Automation-Script-%20%286%29.png)
+
+**Continue the configuration (step 6 of 7) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 7
+
+![Step 5 — JML (Joiner-Mover-Leaver) Automation - Screenshot 7](05-JML-Automation-Script/JML-Automation-Script-%20%287%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-### 06 — Security Audit Script
-Identify security misconfigurations and risks:
+## Step 6 — Security Audit Script
+
+PowerShell script for security auditing:
 
 ```powershell
-# Security-Audit.ps1
+# Find users with password never expires
+Get-ADUser -Filter 'PasswordNeverExpires -eq $true' | Select Name
 
-Write-Host "=== AD Security Audit ===" -ForegroundColor Cyan
+# Find inactive accounts (90+ days)
+Search-ADAccount -AccountInactive -TimeSpan '90.00:00:00'
 
-# 1. Accounts with password never expires
-Write-Host "`n[!] Password Never Expires:" -ForegroundColor Yellow
-Get-ADUser -Filter {PasswordNeverExpires -eq $true -and Enabled -eq $true} |
-    Select-Object Name, SamAccountName | Format-Table
+# Find admin group members
+Get-ADGroupMember -Identity 'Domain Admins' -Recursive
 
-# 2. Accounts with no password required
-Write-Host "`n[!] No Password Required:" -ForegroundColor Yellow
-Get-ADUser -Filter {PasswordNotRequired -eq $true} |
-    Select-Object Name, SamAccountName | Format-Table
-
-# 3. Accounts trusted for unconstrained delegation
-Write-Host "`n[!] Unconstrained Delegation (not DCs):" -ForegroundColor Red
-Get-ADUser -Filter {TrustedForDelegation -eq $true} |
-    Where-Object { $_.DistinguishedName -notlike "*Domain Controllers*" } |
-    Select-Object Name, SamAccountName | Format-Table
-
-# 4. Kerberoastable accounts (SPNs set on user accounts)
-Write-Host "`n[!] Kerberoastable Accounts (SPNs on user accounts):" -ForegroundColor Red
-Get-ADUser -Filter {ServicePrincipalName -ne "$null"} -Properties ServicePrincipalName |
-    Select-Object Name, SamAccountName, ServicePrincipalName | Format-Table
-
-# 5. Admin accounts not in Protected Users
-Write-Host "`n[!] Domain Admins NOT in Protected Users:" -ForegroundColor Red
-$DomainAdmins = Get-ADGroupMember "Domain Admins"
-$ProtectedUsers = Get-ADGroupMember "Protected Users"
-$DomainAdmins | Where-Object { $_.SamAccountName -notin $ProtectedUsers.SamAccountName } |
-    Select-Object Name, SamAccountName | Format-Table
+# Check for weak service account configs
+Get-ADUser -Filter 'ServicePrincipalName -like "*"' -Properties ServicePrincipalName
 ```
 
-**Screenshots:** `06-Security-Audit-Script/`
+### Screenshot 1
+
+![Step 6 — Security Audit Script - Screenshot 1](06-Security-Audit-Script/Security-Audit-Script-%20%281%29.png)
+
+**Begin the process — open the relevant tool or navigate to the starting point.**
+
+### Screenshot 2
+
+![Step 6 — Security Audit Script - Screenshot 2](06-Security-Audit-Script/Security-Audit-Script-%20%282%29.png)
+
+**Navigate to the required setting or dialog (step 2).**
+
+### Screenshot 3
+
+![Step 6 — Security Audit Script - Screenshot 3](06-Security-Audit-Script/Security-Audit-Script-%20%283%29.png)
+
+**Navigate to the required setting or dialog (step 3).**
+
+### Screenshot 4
+
+![Step 6 — Security Audit Script - Screenshot 4](06-Security-Audit-Script/Security-Audit-Script-%20%284%29.png)
+
+**Continue the configuration (step 4 of 11) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 5
+
+![Step 6 — Security Audit Script - Screenshot 5](06-Security-Audit-Script/Security-Audit-Script-%20%285%29.png)
+
+**Continue the configuration (step 5 of 11) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 6
+
+![Step 6 — Security Audit Script - Screenshot 6](06-Security-Audit-Script/Security-Audit-Script-%20%286%29.png)
+
+**Continue the configuration (step 6 of 11) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 7
+
+![Step 6 — Security Audit Script - Screenshot 7](06-Security-Audit-Script/Security-Audit-Script-%20%287%29.png)
+
+**Continue the configuration (step 7 of 11) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 8
+
+![Step 6 — Security Audit Script - Screenshot 8](06-Security-Audit-Script/Security-Audit-Script-%20%288%29.png)
+
+**Continue the configuration (step 8 of 11) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 9
+
+![Step 6 — Security Audit Script - Screenshot 9](06-Security-Audit-Script/Security-Audit-Script-%20%289%29.png)
+
+**Continue the configuration (step 9 of 11) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 10
+
+![Step 6 — Security Audit Script - Screenshot 10](06-Security-Audit-Script/Security-Audit-Script-%20%2810%29.png)
+
+**Continue the configuration (step 10 of 11) — follow the red arrows/boxes for guidance.**
+
+### Screenshot 11
+
+![Step 6 — Security Audit Script - Screenshot 11](06-Security-Audit-Script/Security-Audit-Script-%20%2811%29.png)
+
+**Final result — verify the configuration is complete and working.**
 
 ---
 
-## Key Concepts
+## 🔗 Navigation
 
-- PowerShell's **ActiveDirectory module** (from RSAT) is the primary tool for AD automation in real environments
-- Always use `ConvertTo-SecureString` for passwords — never pass passwords as plain strings in production
-- **JML automation** is one of the highest-value AD tasks — manual offboarding leads to zombie accounts and security risks
-- The security audit script above finds the same misconfigurations that attackers search for with BloodHound — fix them proactively
-- Schedule audit reports to run weekly via Windows Task Scheduler and email results to the security team
+[⬆️ Back to Top](#)
 
----
-
-## Tools Used
-
-`PowerShell ISE` · `ActiveDirectory module` · `Import-Csv` · `Export-Csv` · `Windows Task Scheduler`
-
----
-
-*Previous: [Phase 11 — Enterprise Design](<../Phase 11 lab enterprise Design/README.md>) · Next: [Phase 13 — AD Attacks & Defense](<../Phase 13 lab ad attacks & Defense/README.md>)*
+[📚 Back to Master README](../README.md)
