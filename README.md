@@ -161,7 +161,7 @@ This project is for educational purposes. All lab work was performed in an isola
 
 ## 👤 Author
 
-**Mohammed Nadeem Uddin**
+**Mohammed Riyan Ahmed*
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=flat&logo=linkedin)](https://linkedin.com/in/nadeem-uddin-028996272)
-[![GitHub](https://img.shields.io/badge/GitHub-Follow-black?style=flat&logo=github)](https://github.com/nadeemuddin138)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=flat&logo=linkedin)]()
+[![GitHub](https://img.shields.io/badge/GitHub-Follow-black?style=flat&logo=github)])
